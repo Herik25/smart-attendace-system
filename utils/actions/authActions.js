@@ -81,6 +81,7 @@ const createUser = async (fullName, email, userId) => {
         email,
         userId,
         signUpDate: new Date().toISOString(),
+        role: 'monitor'
     }
 
     const dbRef = ref(getDatabase())

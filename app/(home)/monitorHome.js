@@ -10,6 +10,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { SplashScreen, useRouter } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
+import { FontAwesome6 } from "@expo/vector-icons";
 
 const monitorHome = () => {
   const router = useRouter();
@@ -117,7 +118,7 @@ const monitorHome = () => {
             }}
           >
             <Pressable
-            onPress={() => router.push('attendanceReport')}
+              onPress={() => router.push("attendanceReport")}
               style={{
                 backgroundColor: "#D5CCE3",
                 borderRadius: 6,
@@ -257,7 +258,7 @@ const monitorHome = () => {
               </View>
             </Pressable>
             <Pressable
-            onPress={() => router.push('addStudent')}
+              onPress={() => router.push("addStudent")}
               style={{
                 backgroundColor: "#D5CCE3",
                 borderRadius: 6,
@@ -303,6 +304,68 @@ const monitorHome = () => {
                 <Entypo name="chevron-right" size={24} color="black" />
               </View>
             </Pressable>
+          </View>
+          <View
+            style={{
+              marginTop: 20,
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 12,
+            }}
+          >
+            <Pressable
+              onPress={() => router.push("sortingStudents")}
+              style={{
+                backgroundColor: "#D0C0EA",
+                borderRadius: 6,
+                padding: 12,
+                alignItems: "center",
+                justifyContent: "center",
+                flex: 1,
+              }}
+            >
+              <View
+                style={{
+                  width: 35,
+                  height: 35,
+                  borderRadius: 7,
+                  backgroundColor: "white",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <FontAwesome6 name="sort" size={24} color="black" />
+              </View>
+              <Text style={{ marginTop: 7 }}>Students Sorting</Text>
+            </Pressable>
+            <View
+              style={{
+                backgroundColor: "#D0C0EA",
+                borderRadius: 6,
+                padding: 12,
+                alignItems: "center",
+                justifyContent: "center",
+                flex: 1,
+              }}
+            >
+              <View
+                style={{
+                  width: 35,
+                  height: 35,
+                  borderRadius: 7,
+                  backgroundColor: "white",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Ionicons
+                  name="checkmark-circle-outline"
+                  size={24}
+                  color="black"
+                />
+              </View>
+              <Text style={{ marginTop: 7 }}>Mark All Students</Text>
+            </View>
           </View>
         </View>
       </ScrollView>

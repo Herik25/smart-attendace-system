@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Alert,
   Button,
   Pressable,
@@ -47,11 +48,11 @@ const loginMonitor = () => {
   };
 
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null)
+  const [error, setError] = useState(null);
   const [formState, dispatchFormState] = useReducer(reducer, initialState);
-  const router = useRouter()
-  const dispatch = useDispatch()
-  const navigation = useNavigation()
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   const inputChangeHandler = useCallback(
     (inputId, inputValue) => {
@@ -63,24 +64,23 @@ const loginMonitor = () => {
 
   const authHandler = async () => {
     try {
-      setIsLoading(true)
-      
+      setIsLoading(true);
+
       const action = signIn(
         formState.inputValues.email,
         formState.inputValues.password
-      )
-      await dispatch(action)
+      );
+      await dispatch(action);
 
-      setError(null)
-      Alert.alert("Login Successfull", "Successfully Signed In")
-      setIsLoading(false)
+      setError(null);
+      Alert.alert("Login Successfull", "Successfully Signed In");
+      setIsLoading(false);
 
-      navigation.navigate('monitorHome')
-
+      navigation.navigate("monitorHome");
     } catch (error) {
       console.log(error);
-      setIsLoading(false)
-      setError(error.message)
+      setIsLoading(false);
+      setError(error.message);
     }
   };
 
@@ -137,17 +137,21 @@ const loginMonitor = () => {
             marginVertical: 8,
           }}
         >
-          <Text
-            style={{
-              color: "white",
-              fontFamily: "Poppins",
-              fontWeight: "bold",
-              fontSize: 18,
-              textAlign: "center",
-            }}
-          >
-            LOG IN
-          </Text>
+          {isLoading ? (
+            <ActivityIndicator color="white" size="large" />
+          ) : (
+            <Text
+              style={{
+                color: "white",
+                fontFamily: "Poppins",
+                fontWeight: "bold",
+                fontSize: 18,
+                textAlign: "center",
+              }}
+            >
+              LOG IN
+            </Text>
+          )}
         </Pressable>
 
         <View

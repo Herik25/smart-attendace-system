@@ -9,27 +9,53 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import axios from "axios";
+import { Button, RadioButton } from "react-native-paper";
+import moment from "moment";
+import { DatePickerInput } from "react-native-paper-dates";
+import DropdownComponent from "../../components/DropdownComponent";
+
+const classData = [
+    { label: '1st', value: '1st' },
+    { label: '2nd', value: '2nd' },
+    { label: '3rd', value: '3rd' },
+    { label: '4th', value: '4th' },
+    { label: 'sth', value: '5th' },
+    { label: '6th', value: '6th' },
+    { label: '7th', value: '7th' },
+    { label: '8th', value: '8th' },
+    { label: '9th', value: '9th' },
+    { label: '10th', value: '10th' },
+    { label: '11th', value: '11th' },
+    { label: '12th', value: '12th' },
+  ];
 
 const adddetails = () => {
   const [rollNo, setRollNo] = useState("");
   const [name, setName] = useState("");
-  const [dob, setDob] = useState("");
-  const [gender, setGender] = useState("");
+  const [dob, setDob] = useState(undefined);
+  const [gender, setGender] = useState("male");
   const [address, setAddress] = useState("");
   const [mobileNo, setMobileNo] = useState("");
   const [studentClass, setStudentClass] = useState("");
+  console.log(studentClass);
   const [guardianName, setGuardianName] = useState("");
+  
+  let updatedDob = '';
+  if (dob) {
+    updatedDob = moment(dob.date).format("YYYY-MM-DD");
+  }
 
   const handleRegister = () => {
     const studentData = {
-        rollNo :rollNo,
-        studentName : name,
-        dateOfBirth: dob,
-        gender: gender,
-        address, address,
-        phoneNumber: mobileNo,
-        studentClass: studentClass,
-        guardianName: guardianName,
+      rollNo: rollNo,
+      studentName: name,
+      dateOfBirth: updatedDob,
+      gender: gender,
+      address,
+      address,
+      phoneNumber: mobileNo,
+      studentClass: studentClass,
+      guardianName: guardianName,
     };
     // console.log(studentData);
     // my device's wife ip address: 192.168.0.102:8080
@@ -49,6 +75,7 @@ const adddetails = () => {
         setAddress("");
         setStudentClass("");
         setGuardianName("");
+        updatedDob = '';
       })
       .catch((error) => {
         Alert.alert(
@@ -58,12 +85,22 @@ const adddetails = () => {
         console.log("register failed", error);
       });
   };
+
   return (
     <ScrollView style={{ flex: 1, backgroundColor: "white" }}>
       <View style={{ padding: 10 }}>
-        <Text style={{ fontSize: 17, fontWeight: "bold" }}>
-          Add a New Student
-        </Text>
+        <View
+          style={{
+            borderBottomColor: "black",
+            borderBottomWidth: 1,
+            paddingBottom: 10,
+            alignItems: "center",
+          }}
+        >
+          <Text style={{ fontSize: 17, fontWeight: "bold" }}>
+            Add a New Student
+          </Text>
+        </View>
 
         <View style={{ marginVertical: 10 }}>
           <Text style={{ fontSize: 17, fontWeight: "bold" }}>
@@ -101,9 +138,18 @@ const adddetails = () => {
           />
         </View>
 
-        <View style={{ marginVertical: 10 }}>
-          <Text style={{ fontSize: 17, fontWeight: "bold" }}>Gender</Text>
-          <TextInput
+        <View
+          style={{
+            marginVertical: 10,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-around",
+          }}
+        >
+          <Text style={{ fontSize: 17, fontWeight: "bold", flex: 0.5 }}>
+            Gender
+          </Text>
+          {/* <TextInput
             value={gender}
             onChangeText={(text) => setGender(text)}
             style={{
@@ -115,7 +161,35 @@ const adddetails = () => {
             }}
             placeholder="gender"
             placeholderTextColor={"black"}
-          />
+          /> */}
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-around",
+              paddingHorizontal: 30,
+            }}
+          >
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <RadioButton
+                value="male"
+                color="black"
+                status={gender === "male" ? "checked" : "unchecked"}
+                onPress={() => setGender("male")}
+              />
+              <Text>Male</Text>
+            </View>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <RadioButton
+                value="female"
+                color="black"
+                status={gender === "female" ? "checked" : "unchecked"}
+                onPress={() => setGender("female")}
+              />
+              <Text>Female</Text>
+            </View>
+          </View>
         </View>
 
         <View>
@@ -138,10 +212,10 @@ const adddetails = () => {
         </View>
 
         <View style={{ marginVertical: 10 }}>
-          <Text style={{ fontSize: 17, fontWeight: "bold" }}>
+          <Text style={{ fontSize: 17, fontWeight: "bold", marginBottom: 10 }}>
             Date of Birth
           </Text>
-          <TextInput
+          {/* <TextInput
             value={dob}
             onChangeText={(text) => setDob(text)}
             style={{
@@ -153,28 +227,34 @@ const adddetails = () => {
             }}
             placeholder="Enter Date of Birth"
             placeholderTextColor={"black"}
+          /> */}
+          <DatePickerInput
+            style={{
+              backgroundColor: "white",
+              borderTopColor: "#ccc",
+              borderTopWidth: 1,
+              borderLeftColor: "#ccc",
+              borderLeftWidth: 1,
+              borderRightColor: "#ccc",
+              borderRightWidth: 1,
+            }}
+            endYear={2024}
+            locale="en"
+            label="Birthdate"
+            value={dob}
+            onChange={(d) => setDob(d)}
+            inputMode="start"
+            animationType="slide"
           />
         </View>
 
         <View>
-          <Text style={{ fontSize: 17, fontWeight: "bold" }}>
+          <Text style={{ fontSize: 17, fontWeight: "bold", transform: [{ translateY: 10 }] }}>
             Student Class
           </Text>
-          <TextInput
-            value={studentClass}
-            onChangeText={(text) => setStudentClass(text)}
-            style={{
-              padding: 10,
-              borderColor: "#D0D0D0",
-              borderWidth: 1,
-              marginTop: 10,
-              borderRadius: 5,
-            }}
-            placeholder="Student Class"
-            placeholderTextColor={"black"}
-          />
+          <DropdownComponent placeholder="Select Class" data={classData} isSubject={true} state={studentClass} setState={setStudentClass} />
         </View>
-        <View style={{ marginVertical: 10 }}>
+        <View style={{ marginBottom: 10 }}>
           <Text style={{ fontSize: 17, fontWeight: "bold" }}>
             Guardian Name
           </Text>

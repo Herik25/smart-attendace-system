@@ -65,6 +65,7 @@ const User = () => {
   };
 
   // formar of QR CODE encoding : 1&harsh parmar
+  console.log(params);
   const data = params.data.split("&");
   const id = data[0];
   const name = data[1];
@@ -90,7 +91,7 @@ const User = () => {
       if (response.status === 200) {
         Alert.alert(
           "Attendance Submited!",
-          `Attendance Submitted Successfully! for ${params.data.slice(3)}`
+          `Attendance Submitted Successfully! for ${name}`
         );
 
         navigation.navigate("monitorHome")

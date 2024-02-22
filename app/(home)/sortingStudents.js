@@ -5,8 +5,9 @@ import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import axios from "axios";
 import moment from "moment";
-import SearchResults from "../../components/SearchResults";
 import DropdownComponent from "../../components/DropdownComponent";
+import { FontAwesome } from "@expo/vector-icons";
+import DropdownStatus from "../../components/DropdownStatus";
 
 const subjectList = [
   { label: "Flaag Ceremony", value: "Flag Ceremony" },
@@ -21,10 +22,19 @@ const subjectList = [
   { label: "Flag Retreat", value: "Flag Retreat" },
 ];
 
-const attendanceReport = () => {
+const statusList = [
+  { label: "All", value: "all" },
+  { label: "Present", value: "present" },
+  { label: "absent", value: "absent" },
+  { label: "Half Day", value: "halfday" },
+];
+
+const sortingStudents = () => {
   const router = useRouter();
   const [currentDate, setCurrentDate] = useState(moment());
   const [subject, setSubject] = useState("");
+  const [studentsWithAttendance, setStudentsWithAttendance] = useState([]);
+  const [status, setStatus] = useState(null);
 
   const goToNextDay = () => {
     const nextDate = moment(currentDate).add(1, "days");
@@ -72,17 +82,41 @@ const attendanceReport = () => {
     fetchAttendanceData();
   }, [currentDate]);
 
-  const studentsWithAttendace = students.map((student) => {
-    const attendanceRecord = attendance.find((record) => {
-      return record.rollNo === student.rollNo;
-    });
+  useEffect(() => {
+    const fetchAttendanceData = async () => {
+      try {
+        const response = await axios.get(
+          `http://192.168.0.102:8080/attendance`,
+          {
+            params: {
+              date: currentDate.format("MMMM D, YYYY"),
+            },
+          }
+        );
+        const attendanceData = response.data;
 
-    return {
-      ...student,
-      status: attendanceRecord ? attendanceRecord.status : "",
-      subject: attendanceRecord ? attendanceRecord.subject : "", // 'Not Marked' or a default status
+        // Map through students to add attendance data
+        const studentsWithAttendaceData = students.map((student) => {
+          const attendanceRecord = attendanceData.find((record) => {
+            return record.rollNo === student.rollNo;
+          });
+
+          return {
+            ...student,
+            status: attendanceRecord ? attendanceRecord.status : "",
+            subject: attendanceRecord ? attendanceRecord.subject : "",
+          };
+        });
+
+        // Update studentsWithAttendance state
+        setStudentsWithAttendance(studentsWithAttendaceData);
+      } catch (error) {
+        console.log("error fetching attendance data", error);
+      }
     };
-  });
+
+    fetchAttendanceData();
+  }, [currentDate, students]);
 
   useEffect(() => {
     const fetchStudentsData = async () => {
@@ -100,9 +134,90 @@ const attendanceReport = () => {
   }, []);
   //   console.log(students);
 
-  const updatedStudents = studentsWithAttendace
-    .filter((item) => item.status && item.subject === subject) // filter the students with status and subjects
-    .sort((a, b) => a.rollNo - b.rollNo); // sort the students according to the roll no
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortIcon, setSortIcon] = useState(false);
+
+  const handleSort = () => {
+    const newSortOrder = sortOrder === "asc" ? "desc" : "asc";
+    setSortIcon(true);
+    setSortOrder(newSortOrder);
+    // Sort students based on roll number and current sorting order
+    const sortedStudents = studentsWithAttendance.sort((a, b) => {
+      if (newSortOrder === "asc") {
+        return a.rollNo - b.rollNo;
+      } else {
+        return b.rollNo - a.rollNo;
+      }
+    });
+    setStudentsWithAttendance(sortedStudents); // Update state with sorted students
+  };
+
+  const [sortDetail, setSortDetail] = useState("asc");
+  const [detailIcon, setDetailIcon] = useState(false);
+
+  const handleDetailSort = () => {
+    const newSortOrder = sortDetail === "asc" ? "desc" : "asc";
+    setDetailIcon(true);
+    setSortDetail(newSortOrder);
+    // Sort students based on roll number and current sorting order
+    const sortedStudents = studentsWithAttendance.sort((a, b) => {
+      const nameA = a.studentName.toUpperCase(); // ignore upper and lowercase
+      const nameB = b.studentName.toUpperCase(); // ignore upper and lowercase
+      if (newSortOrder === "asc") {
+        if (nameA < nameB) {
+          return -1;
+        }
+        if (nameA > nameB) {
+          return 1;
+        }
+        return 0;
+      } else {
+        if (nameA > nameB) {
+          return -1;
+        }
+        if (nameA < nameB) {
+          return 1;
+        }
+        return 0;
+      }
+    });
+    setStudentsWithAttendance(sortedStudents); // Update state with sorted students
+  };
+
+  const filterByStatus = (status) => {
+    return studentsWithAttendance.filter(
+      (student) => student.status === status
+    );
+  };
+  useEffect(() => {
+    if (status) {
+      if (status === "present") {
+        const handlePresent = () => {
+          const presentStudents = filterByStatus("present");
+          setStudentsWithAttendance(presentStudents);
+        };
+        handlePresent();
+      } else if (status == "absent") {
+        const handleAbsent = () => {
+          const absentStudents = filterByStatus("absent");
+          setStudents(absentStudents);
+        };
+        handleAbsent();
+      } else if (status == "halfday") {
+        const handleHalfDay = () => {
+          const halfDayStudents = filterByStatus("halfday");
+          setStudents(halfDayStudents);
+        };
+        handleHalfDay();
+      } else if (status === "all") {
+        const handleAll = () => {
+          const allStudents = students.filter((student) => true);
+          setStudents(allStudents);
+        };
+        handleAll();
+      }
+    }
+  }, [status]);
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -153,7 +268,8 @@ const attendanceReport = () => {
               borderBottomWidth: 1,
             }}
           >
-            <View
+            <Pressable
+              onPress={handleSort}
               style={{
                 width: 60,
                 height: 50,
@@ -161,17 +277,57 @@ const attendanceReport = () => {
                 justifyContent: "center",
               }}
             >
-              <Text
-                style={{ color: "black", fontSize: 14, fontWeight: "bold" }}
+              <View
+                style={{ flexDirection: "row", gap: 2, alignItems: "center" }}
               >
-                Roll No
-              </Text>
-            </View>
-            <View style={{ flex: 1, alignItems: "center" }}>
-              <Text style={{ fontSize: 14, fontWeight: "bold" }}>Details</Text>
-            </View>
+                <Text
+                  style={{ color: "black", fontSize: 14, fontWeight: "bold" }}
+                >
+                  Roll No
+                </Text>
+                {sortIcon ? (
+                  sortOrder === "asc" ? (
+                    <FontAwesome name="sort-asc" size={14} color="black" />
+                  ) : (
+                    <FontAwesome name="sort-desc" size={14} color="black" />
+                  )
+                ) : (
+                  <FontAwesome name="unsorted" size={14} color="black" />
+                )}
+              </View>
+            </Pressable>
+            <Pressable
+              onPress={handleDetailSort}
+              style={{
+                flex: 1,
+                alignItems: "center",
+              }}
+            >
+              <View
+                style={{ flexDirection: "row", gap: 2, alignItems: "center" }}
+              >
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: "bold",
+                  }}
+                >
+                  Details
+                </Text>
+                {detailIcon ? (
+                  sortDetail === "asc" ? (
+                    <FontAwesome name="sort-asc" size={14} color="black" />
+                  ) : (
+                    <FontAwesome name="sort-desc" size={14} color="black" />
+                  )
+                ) : (
+                  <FontAwesome name="unsorted" size={14} color="black" />
+                )}
+              </View>
+            </Pressable>
 
-            <View
+            {/* <Pressable
+                onPress={handlePresent}
               style={{
                 width: 60,
                 height: 50,
@@ -188,18 +344,30 @@ const attendanceReport = () => {
               >
                 Status
               </Text>
+            </Pressable> */}
+            <View style={{ flex: 1 }}>
+              <DropdownStatus
+                data={statusList}
+                placeholder="Status"
+                isSubject={true}
+                state={status}
+                setState={setStatus}
+              />
             </View>
           </Pressable>
         </View>
 
         <View style={{ marginHorizontal: 12 }}>
-          {updatedStudents.length === 0 ? (
-            <View style={{ alignItems: 'center', justifyContent: 'center', minHeight: '65%'}}>
-              <Text style={{ fontSize: 16, marginVertical: 8 }}>No Data Available!!</Text>
-              <Text style={{ fontSize: 20}}>Select Any Subject</Text>
-            </View>
-          ) : (
-            updatedStudents.map((item, index) => (
+          {studentsWithAttendance
+            .filter((item) => {
+              if (subject == "") {
+                return item;
+              } else {
+                return item.subject === subject;
+              }
+            }) // filter the students with status
+            // .sort((a, b) => a.rollNo - b.rollNo) // sort the students according to the roll no
+            .map((item, index) => (
               <Pressable
                 onPress={() =>
                   router.push({
@@ -281,14 +449,13 @@ const attendanceReport = () => {
                   </View>
                 )}
               </Pressable>
-            ))
-          )}
+            ))}
         </View>
       </Pressable>
     </View>
   );
 };
 
-export default attendanceReport;
+export default sortingStudents;
 
 const styles = StyleSheet.create({});
