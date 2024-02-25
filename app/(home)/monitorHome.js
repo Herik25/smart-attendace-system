@@ -18,27 +18,31 @@ const monitorHome = () => {
   return (
     <LinearGradient colors={["#f1f1f1", "#f1f1f1"]} style={{ flex: 1 }}>
       <ScrollView>
-        <View style={{ padding: 12 }}>
-          <View
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingVertical: 12,
+            paddingHorizontal: 4,
+            backgroundColor: "white",
+            borderBottomColor: "black",
+            borderBottomWidth: 1,
+          }}
+        >
+          <Feather name="bar-chart" size={22} color="black" />
+          <Text
             style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
+              fontSize: 16,
+              fontWeight: 600,
+              color: "black",
             }}
           >
-            <Feather name="bar-chart" size={22} color="black" />
-            <Text
-              style={{
-                fontSize: 16,
-                fontWeight: 600,
-                color: "black",
-              }}
-            >
-              Smart Attendance System
-            </Text>
-            <Entypo name="lock" size={20} color="black" />
-          </View>
-
+            Smart Attendance System
+          </Text>
+          <Entypo name="lock" size={20} color="black" />
+        </View>
+        <View style={{ paddingHorizontal: 12 }}>
           <View
             style={{
               marginTop: 20,
@@ -50,12 +54,13 @@ const monitorHome = () => {
             <Pressable
               onPress={() => router.push("students")}
               style={{
-                backgroundColor: "#CCCDE3",
+                // backgroundColor: "#CCCDE3",
+                backgroundColor: "white",
                 padding: 12,
                 borderRadius: 6,
                 alignItems: "center",
                 justifyContent: "center",
-                borderColor: "#ccc",
+                borderColor: "black",
                 borderWidth: 2,
                 flex: 1,
               }}
@@ -68,25 +73,28 @@ const monitorHome = () => {
                   backgroundColor: "white",
                   alignItems: "center",
                   justifyContent: "center",
-                  borderColor: "#ccc",
+                  borderColor: "black",
                   borderWidth: 2,
                 }}
               >
                 <Ionicons name="people-sharp" size={24} color="black" />
               </View>
-              <Text style={{ marginTop: 7, fontWeight: 600 }}>
+              <Text style={{ marginTop: 7, fontWeight: "bold" }}>
                 Student List
               </Text>
             </Pressable>
             <Pressable
               onPress={() => router.push("scanner")}
               style={{
-                backgroundColor: "#CCCDE3",
+                // backgroundColor: "#CCCDE3",
+                backgroundColor: "#fff",
                 padding: 12,
                 borderRadius: 6,
                 alignItems: "center",
                 justifyContent: "center",
                 flex: 1,
+                borderWidth: 2,
+                borderColor: "black",
               }}
             >
               <View
@@ -97,11 +105,13 @@ const monitorHome = () => {
                   backgroundColor: "white",
                   alignItems: "center",
                   justifyContent: "center",
+                  borderColor: "black",
+                  borderWidth: 2,
                 }}
               >
                 <MaterialIcons name="qr-code-scanner" size={24} color="black" />
               </View>
-              <Text style={{ marginTop: 7, fontWeight: 600 }}>
+              <Text style={{ marginTop: 7, fontWeight: "bold" }}>
                 Mark Attendance
               </Text>
             </Pressable>
@@ -113,14 +123,15 @@ const monitorHome = () => {
               paddingHorizontal: 10,
               paddingVertical: 10,
               borderRadius: 7,
-              borderColor: "#ccc",
+              borderColor: "black",
               borderWidth: 2,
             }}
           >
             <Pressable
               onPress={() => router.push("attendanceReport")}
               style={{
-                backgroundColor: "#D5CCE3",
+                // backgroundColor: "#D5CCE3",
+                backgroundColor: "black",
                 borderRadius: 6,
                 padding: 10,
                 flexDirection: "row",
@@ -147,6 +158,7 @@ const monitorHome = () => {
                   fontSize: 16,
                   fontWeight: 600,
                   flex: 1,
+                  color: "white",
                 }}
               >
                 Attendance Report
@@ -167,7 +179,7 @@ const monitorHome = () => {
             <Pressable
               onPress={() => router.push("summaryReport")}
               style={{
-                backgroundColor: "#D5CCE3",
+                backgroundColor: "black",
                 borderRadius: 6,
                 padding: 10,
                 flexDirection: "row",
@@ -194,6 +206,7 @@ const monitorHome = () => {
                   fontSize: 16,
                   fontWeight: 600,
                   flex: 1,
+                  color: "white",
                 }}
               >
                 Summary Report
@@ -213,7 +226,7 @@ const monitorHome = () => {
             </Pressable>
             <Pressable
               style={{
-                backgroundColor: "#D5CCE3",
+                backgroundColor: "black",
                 borderRadius: 6,
                 padding: 10,
                 flexDirection: "row",
@@ -240,6 +253,7 @@ const monitorHome = () => {
                   fontSize: 16,
                   fontWeight: 600,
                   flex: 1,
+                  color: "white",
                 }}
               >
                 All Holoday Reports
@@ -260,7 +274,7 @@ const monitorHome = () => {
             <Pressable
               onPress={() => router.push("addStudent")}
               style={{
-                backgroundColor: "#D5CCE3",
+                backgroundColor: "#000",
                 borderRadius: 6,
                 padding: 10,
                 flexDirection: "row",
@@ -287,6 +301,7 @@ const monitorHome = () => {
                   fontSize: 16,
                   fontWeight: 600,
                   flex: 1,
+                  color: "white",
                 }}
               >
                 Add Students
@@ -316,12 +331,14 @@ const monitorHome = () => {
             <Pressable
               onPress={() => router.push("sortingStudents")}
               style={{
-                backgroundColor: "#D0C0EA",
+                backgroundColor: "white",
                 borderRadius: 6,
                 padding: 12,
                 alignItems: "center",
                 justifyContent: "center",
                 flex: 1,
+                borderWidth: 2,
+                borderColor: "black",
               }}
             >
               <View
@@ -329,23 +346,28 @@ const monitorHome = () => {
                   width: 35,
                   height: 35,
                   borderRadius: 7,
-                  backgroundColor: "white",
+                  backgroundColor: "black",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                <FontAwesome6 name="sort" size={24} color="black" />
+                <FontAwesome6 name="sort" size={24} color="white" />
               </View>
-              <Text style={{ marginTop: 7 }}>Students Sorting</Text>
+              <Text style={{ marginTop: 7, fontWeight: "bold" }}>
+                Students Sorting
+              </Text>
             </Pressable>
-            <View
+            <Pressable
+              onPress={() => router.push("markAllStudents")}
               style={{
-                backgroundColor: "#D0C0EA",
+                backgroundColor: "white",
                 borderRadius: 6,
                 padding: 12,
                 alignItems: "center",
                 justifyContent: "center",
                 flex: 1,
+                borderWidth: 2,
+                borderColor: "black",
               }}
             >
               <View
@@ -353,7 +375,7 @@ const monitorHome = () => {
                   width: 35,
                   height: 35,
                   borderRadius: 7,
-                  backgroundColor: "white",
+                  backgroundColor: "black",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
@@ -361,11 +383,77 @@ const monitorHome = () => {
                 <Ionicons
                   name="checkmark-circle-outline"
                   size={24}
-                  color="black"
+                  color="white"
                 />
               </View>
-              <Text style={{ marginTop: 7 }}>Mark All Students</Text>
-            </View>
+              <Text style={{ marginTop: 7, fontWeight: "bold" }}>
+                Mark All Students
+              </Text>
+            </Pressable>
+          </View>
+          <View
+            style={{
+              marginTop: 14,
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 12,
+            }}
+          >
+            <Pressable
+              onPress={() => router.push("deleteStudent")}
+              style={{
+                // backgroundColor: "#D0C0EA",
+                backgroundColor: "white",
+                borderRadius: 6,
+                padding: 12,
+                alignItems: "center",
+                justifyContent: "center",
+                flex: 1,
+                borderWidth: 2,
+                borderColor: "black",
+              }}
+            >
+              <View
+                style={{
+                  width: 35,
+                  height: 35,
+                  borderRadius: 7,
+                  backgroundColor: "black",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Ionicons name="remove-circle-outline" size={24} color="white" />
+              </View>
+              <Text style={{ marginTop: 7, fontWeight: 'bold' }}>Delete Student</Text>
+            </Pressable>
+            <Pressable
+              onPress={() => router.push("deleteAllAttendance")}
+              style={{
+                backgroundColor: "white",
+                borderRadius: 6,
+                padding: 12,
+                alignItems: "center",
+                justifyContent: "center",
+                flex: 1,
+                borderWidth: 2,
+                borderColor: 'black'
+              }}
+            >
+              <View
+                style={{
+                  width: 35,
+                  height: 35,
+                  borderRadius: 7,
+                  backgroundColor: "black",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <AntDesign name="delete" size={24} color="white" />
+              </View>
+              <Text style={{ marginTop: 7, fontWeight: 'bold' }}>Delete All Attendance</Text>
+            </Pressable>
           </View>
         </View>
       </ScrollView>

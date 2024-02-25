@@ -8,6 +8,7 @@ import { DataTable } from "react-native-paper";
 const summaryReport = () => {
   const [attendanceData, setAttendanceData] = useState([]);
   const [currentDate, setCurrentDate] = useState(moment());
+  const totalSubjects = 200;
 
   const goToNextMont = () => {
     const nextMonth = moment(currentDate).add(1, "months");
@@ -31,8 +32,8 @@ const summaryReport = () => {
         "http://192.168.0.102:8080/attendance-report-all-students",
         {
           params: {
-            month: 2,
-            year: 2024,
+            month: currentDate.format("M"),
+            year: currentDate.format("YYYY"),
           },
         }
       );
@@ -44,9 +45,12 @@ const summaryReport = () => {
 
   useEffect(() => {
     fetchAttendanceReport();
-  }, []);
+  }, [currentDate]);
+  //   console.log(attendanceData);
 
-//   console.log(attendanceData);
+  const calculatePercentage = (present, totalSubjects) => {
+    return (present / totalSubjects) * 100;
+  };
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: "white" }}>
@@ -77,34 +81,93 @@ const summaryReport = () => {
 
       <View style={{ marginHorizontal: 12 }}>
         {attendanceData.map((item, index) => {
+          const percentage = calculatePercentage(item.present, totalSubjects);
           return (
-            <View key={index} style={{ marginVertical: 6, borderBottomColor: '#ccc', borderBottomWidth: 1, paddingBottom: 8 }}>
+            <View
+              key={index}
+              style={{
+                marginVertical: 6,
+                borderBottomColor: "#ccc",
+                borderBottomWidth: 1,
+                paddingBottom: 8,
+              }}
+            >
               <View
-                style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 10,
+                  justifyContent: "space-between",
+                }}
               >
                 <View
                   style={{
-                    width: 50,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 10,
+                  }}
+                >
+                  <View
+                    style={{
+                      width: 50,
+                      height: 50,
+                      borderRadius: 8,
+                      padding: 10,
+                      backgroundColor: "black",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "white",
+                        fontSize: 20,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {item?.name.charAt(0).toUpperCase()}
+                    </Text>
+                  </View>
+                  <View>
+                    <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                      {item?.name}
+                    </Text>
+                    <Text style={{ marginTop: 5, color: "gray" }}>
+                      {item?.className}th (Roll No: {item?.rollNo})
+                    </Text>
+                  </View>
+                </View>
+                <View
+                  style={{
                     height: 50,
-                    borderRadius: 8,
-                    padding: 10,
-                    backgroundColor: "#4b6cb7",
+                    width: 50,
+                    backgroundColor: "white",
+                    borderColor: "black",
+                    borderWidth: 2,
+                    borderRadius: 14,
                     alignItems: "center",
                     justifyContent: "center",
                   }}
                 >
-                  <Text
-                    style={{ color: "white", fontSize: 20, fontWeight: "bold" }}
+                  <View
+                    style={{
+                      borderBottomColor: "black",
+                      borderBottomWidth: 1,
+                      width: "100%",
+                      alignItems: "center",
+                    }}
                   >
-                    {item?.name.charAt(0).toUpperCase()}
-                  </Text>
-                </View>
-                <View>
-                  <Text style={{ fontSize: 16, fontWeight: "bold" }}>
-                    {item?.name}
-                  </Text>
-                  <Text style={{ marginTop: 5, color: "gray" }}>
-                    {item?.className}th (Roll No: {item?.rollNo})
+                    <Text
+                      style={{
+                        fontSize: 10,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Monthly
+                    </Text>
+                  </View>
+                  <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                    {percentage}%
                   </Text>
                 </View>
               </View>
@@ -112,24 +175,92 @@ const summaryReport = () => {
                 style={{
                   marginTop: 15,
                   margin: 5,
-                  backgroundColor: "#a1ffce",
+                  backgroundColor: "#f1f1f1",
                   borderRadius: 5,
                 }}
               >
                 <DataTable>
                   <DataTable.Header>
-                    <DataTable.Title style={{justifyContent: 'center', borderRightWidth: 1, borderRightColor: '#DBDADC' }}>Presents</DataTable.Title>
-                    <DataTable.Title style={{justifyContent: 'center', borderRightWidth: 1, borderRightColor: '#DBDADC' }}>Absents</DataTable.Title>
-                    <DataTable.Title style={{justifyContent: 'center', borderRightWidth: 1, borderRightColor: '#DBDADC' }}>HalfDay</DataTable.Title>
-                    <DataTable.Title style={{justifyContent: 'center', borderRightWidth: 1, borderRightColor: '#DBDADC' }}>HoliyDay</DataTable.Title>
-                    <DataTable.Title style={{justifyContent: 'center'}}>N/W</DataTable.Title>
+                    <DataTable.Title
+                      style={{
+                        justifyContent: "center",
+                        borderRightWidth: 1,
+                        borderRightColor: "#DBDADC",
+                      }}
+                    >
+                      Presents
+                    </DataTable.Title>
+                    <DataTable.Title
+                      style={{
+                        justifyContent: "center",
+                        borderRightWidth: 1,
+                        borderRightColor: "#DBDADC",
+                      }}
+                    >
+                      Absents
+                    </DataTable.Title>
+                    <DataTable.Title
+                      style={{
+                        justifyContent: "center",
+                        borderRightWidth: 1,
+                        borderRightColor: "#DBDADC",
+                      }}
+                    >
+                      HalfDay
+                    </DataTable.Title>
+                    <DataTable.Title
+                      style={{
+                        justifyContent: "center",
+                        borderRightWidth: 1,
+                        borderRightColor: "#DBDADC",
+                      }}
+                    >
+                      HoliyDay
+                    </DataTable.Title>
+                    <DataTable.Title style={{ justifyContent: "center" }}>
+                      N/W
+                    </DataTable.Title>
                   </DataTable.Header>
                   <DataTable.Row>
-                    <DataTable.Cell style={{  borderRightWidth: 1, borderRightColor: '#DBDADC', justifyContent: 'center' }}>{item?.present}</DataTable.Cell>
-                    <DataTable.Cell style={{  borderRightWidth: 1, borderRightColor: '#DBDADC', justifyContent: 'center' }}>{item?.absent}</DataTable.Cell>
-                    <DataTable.Cell style={{  borderRightWidth: 1, borderRightColor: '#DBDADC', justifyContent: 'center' }}>{item?.halfday}</DataTable.Cell>
-                    <DataTable.Cell style={{  borderRightWidth: 1, borderRightColor: '#DBDADC', justifyContent: 'center' }}>4</DataTable.Cell>
-                    <DataTable.Cell style={{  justifyContent: 'center' }}>8</DataTable.Cell>
+                    <DataTable.Cell
+                      style={{
+                        borderRightWidth: 1,
+                        borderRightColor: "#DBDADC",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {item?.present}
+                    </DataTable.Cell>
+                    <DataTable.Cell
+                      style={{
+                        borderRightWidth: 1,
+                        borderRightColor: "#DBDADC",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {item?.absent}
+                    </DataTable.Cell>
+                    <DataTable.Cell
+                      style={{
+                        borderRightWidth: 1,
+                        borderRightColor: "#DBDADC",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {item?.halfday}
+                    </DataTable.Cell>
+                    <DataTable.Cell
+                      style={{
+                        borderRightWidth: 1,
+                        borderRightColor: "#DBDADC",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {item?.holiday ? item?.holiday : 0}
+                    </DataTable.Cell>
+                    <DataTable.Cell style={{ justifyContent: "center" }}>
+                      8
+                    </DataTable.Cell>
                   </DataTable.Row>
                 </DataTable>
               </View>

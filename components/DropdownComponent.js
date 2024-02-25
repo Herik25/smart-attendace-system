@@ -15,7 +15,13 @@ import { AntDesign } from "@expo/vector-icons";
 //   { label: 'Item 8', value: '8' },
 // ];
 
-const DropdownComponent = ({ data, isSubject, placeholder, state, setState }) => {
+const DropdownComponent = ({
+  data,
+  isSubject,
+  placeholder,
+  state,
+  setState
+}) => {
   // const [value, setValue] = useState(null);
 
   return (
@@ -45,7 +51,12 @@ const DropdownComponent = ({ data, isSubject, placeholder, state, setState }) =>
             color="black"
           />
         ) : (
-          <AntDesign style={styles.icon} name="clockcircleo" size={18} color="black" />
+          <AntDesign
+            style={styles.icon}
+            name="clockcircleo"
+            size={18}
+            color="black"
+          />
         )
       }
     />

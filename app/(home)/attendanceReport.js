@@ -9,7 +9,7 @@ import SearchResults from "../../components/SearchResults";
 import DropdownComponent from "../../components/DropdownComponent";
 
 const subjectList = [
-  { label: "Flaag Ceremony", value: "Flag Ceremony" },
+  { label: "Flag Ceremony", value: "Flag Ceremony" },
   { label: "General Physics", value: "General Physics" },
   { label: "PE & Health", value: "PE & Health" },
   { label: "3I", value: "3I" },
@@ -228,7 +228,7 @@ const attendanceReport = () => {
                     justifyContent: "center",
                   }}
                 >
-                  <Text style={{ color: "black", fontSize: 16 }}>
+                  <Text style={{ color: "black", fontSize: 20, fontWeight: 'bold' }}>
                     {item?.rollNo}
                   </Text>
                 </View>
@@ -238,7 +238,7 @@ const attendanceReport = () => {
                     height: 50,
                     borderRadius: 8,
                     padding: 10,
-                    backgroundColor: "#4b6cb7",
+                    backgroundColor: "black",
                     alignItems: "center",
                     justifyContent: "center",
                   }}

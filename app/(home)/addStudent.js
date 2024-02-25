@@ -37,7 +37,6 @@ const adddetails = () => {
   const [address, setAddress] = useState("");
   const [mobileNo, setMobileNo] = useState("");
   const [studentClass, setStudentClass] = useState("");
-  console.log(studentClass);
   const [guardianName, setGuardianName] = useState("");
   
   let updatedDob = '';
@@ -293,15 +292,15 @@ const adddetails = () => {
         <Pressable
           onPress={handleRegister}
           style={{
-            backgroundColor: "#ABCABA",
-            padding: 10,
+            backgroundColor: "black",
+            paddingVertical: 14,
             marginTop: 20,
             justifyContent: "center",
             alignItems: "center",
             borderRadius: 5,
           }}
         >
-          <Text style={{ fontWeight: "bold", color: "white" }}>
+          <Text style={{ fontWeight: "bold", color: "white",fontSize: 16 }}>
             Add Student
           </Text>
         </Pressable>

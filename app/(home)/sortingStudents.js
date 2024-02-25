@@ -1,4 +1,11 @@
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
@@ -10,7 +17,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import DropdownStatus from "../../components/DropdownStatus";
 
 const subjectList = [
-  { label: "Flaag Ceremony", value: "Flag Ceremony" },
+  { label: "Flag Ceremony", value: "Flag Ceremony" },
   { label: "General Physics", value: "General Physics" },
   { label: "PE & Health", value: "PE & Health" },
   { label: "3I", value: "3I" },
@@ -32,9 +39,11 @@ const statusList = [
 const sortingStudents = () => {
   const router = useRouter();
   const [currentDate, setCurrentDate] = useState(moment());
-  const [subject, setSubject] = useState("");
+  const [subject, setSubject] = useState("Flag Ceremony");
   const [studentsWithAttendance, setStudentsWithAttendance] = useState([]);
   const [status, setStatus] = useState(null);
+  const [filteredStudents, setFilteredStudents] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const goToNextDay = () => {
     const nextDate = moment(currentDate).add(1, "days");
@@ -58,6 +67,7 @@ const sortingStudents = () => {
         // for pc ip address should be 10.0.2.2:8080
         const response = await axios.get("http://192.168.0.102:8080/students");
         setStudents(response.data);
+        setIsLoading(false);
       } catch (error) {
         console.log("error fetching student data", error);
       }
@@ -73,6 +83,7 @@ const sortingStudents = () => {
         },
       });
       setAttendance(response.data);
+      setFilteredStudents(response.data);
     } catch (error) {
       console.log("error fetching attendance data", error);
     }
@@ -189,35 +200,26 @@ const sortingStudents = () => {
       (student) => student.status === status
     );
   };
+
   useEffect(() => {
-    if (status) {
+    const filterStudentsByStatus = () => {
+      let filteredStudents = [];
       if (status === "present") {
-        const handlePresent = () => {
-          const presentStudents = filterByStatus("present");
-          setStudentsWithAttendance(presentStudents);
-        };
-        handlePresent();
-      } else if (status == "absent") {
-        const handleAbsent = () => {
-          const absentStudents = filterByStatus("absent");
-          setStudents(absentStudents);
-        };
-        handleAbsent();
-      } else if (status == "halfday") {
-        const handleHalfDay = () => {
-          const halfDayStudents = filterByStatus("halfday");
-          setStudents(halfDayStudents);
-        };
-        handleHalfDay();
+        filteredStudents = filterByStatus("present");
+      } else if (status === "absent") {
+        filteredStudents = filterByStatus("absent");
+      } else if (status === "halfday") {
+        filteredStudents = filterByStatus("halfday");
       } else if (status === "all") {
-        const handleAll = () => {
-          const allStudents = students.filter((student) => true);
-          setStudents(allStudents);
-        };
-        handleAll();
+        filteredStudents = studentsWithAttendance;
       }
-    }
+      setFilteredStudents(filteredStudents);
+    };
+
+    filterStudentsByStatus();
   }, [status]);
+
+  // Use filteredStudents instead of studentsWithAttendance for rendering
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -358,98 +360,110 @@ const sortingStudents = () => {
         </View>
 
         <View style={{ marginHorizontal: 12 }}>
-          {studentsWithAttendance
-            .filter((item) => {
-              if (subject == "") {
-                return item;
-              } else {
-                return item.subject === subject;
-              }
-            }) // filter the students with status
-            // .sort((a, b) => a.rollNo - b.rollNo) // sort the students according to the roll no
-            .map((item, index) => (
-              <Pressable
-                onPress={() =>
-                  router.push({
-                    pathname: "/[user]",
-                    params: {
-                      data: `${item.rollNo}&${item.studentName}`,
-                    },
-                  })
+          {isLoading ? (
+            <View
+              style={{
+                minHeight: "60%",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <ActivityIndicator size="large" color="black" />
+            </View>
+          ) : (
+            filteredStudents
+              .filter((item) => {
+                if (subject == "") {
+                  return item;
+                } else {
+                  return item.subject === subject;
                 }
-                key={index}
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  gap: 10,
-                  marginVertical: 6,
-                  paddingBottom: 10,
-                  borderBottomColor: "#ccc",
-                  borderBottomWidth: 1,
-                }}
-              >
-                <View
+              }) // filter the students with status
+              // .sort((a, b) => a.rollNo - b.rollNo) // sort the students according to the roll no
+              .map((item, index) => (
+                <Pressable
+                  onPress={() =>
+                    router.push({
+                      pathname: "/[user]",
+                      params: {
+                        data: `${item.rollNo}&${item.studentName}`,
+                      },
+                    })
+                  }
+                  key={index}
                   style={{
-                    width: 40,
-                    height: 50,
+                    flexDirection: "row",
                     alignItems: "center",
-                    justifyContent: "center",
+                    gap: 10,
+                    marginVertical: 6,
+                    paddingBottom: 10,
+                    borderBottomColor: "#ccc",
+                    borderBottomWidth: 1,
                   }}
                 >
-                  <Text style={{ color: "black", fontSize: 16 }}>
-                    {item?.rollNo}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    width: 50,
-                    height: 50,
-                    borderRadius: 8,
-                    padding: 10,
-                    backgroundColor: "#4b6cb7",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Text style={{ color: "white", fontSize: 16 }}>
-                    {item?.studentName?.charAt(0).toUpperCase()}
-                  </Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 16, fontWeight: "bold" }}>
-                    {item?.studentName}
-                  </Text>
-                  <Text style={{ marginTop: 5, color: "gray" }}>
-                    Class: {item?.studentClass}th
-                  </Text>
-                </View>
-                {item?.status && (
+                  <View
+                    style={{
+                      width: 40,
+                      height: 50,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Text style={{ color: "black", fontSize: 20, fontWeight: 'bold' }}>
+                      {item?.rollNo}
+                    </Text>
+                  </View>
                   <View
                     style={{
                       width: 50,
                       height: 50,
                       borderRadius: 8,
                       padding: 10,
-                      backgroundColor: `${
-                        item.status === "absent" ? "red" : "green"
-                      }`,
+                      backgroundColor: "black",
                       alignItems: "center",
                       justifyContent: "center",
                     }}
                   >
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        color: "white",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      {item.status.charAt(0).toUpperCase()}
+                    <Text style={{ color: "white", fontSize: 16 }}>
+                      {item?.studentName?.charAt(0).toUpperCase()}
                     </Text>
                   </View>
-                )}
-              </Pressable>
-            ))}
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                      {item?.studentName}
+                    </Text>
+                    <Text style={{ marginTop: 5, color: "gray" }}>
+                      Class: {item?.studentClass}th
+                    </Text>
+                  </View>
+                  {item?.status && (
+                    <View
+                      style={{
+                        width: 50,
+                        height: 50,
+                        borderRadius: 8,
+                        padding: 10,
+                        backgroundColor: `${
+                          item.status === "absent" ? "red" : "green"
+                        }`,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          color: "white",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {item.status.charAt(0).toUpperCase()}
+                      </Text>
+                    </View>
+                  )}
+                </Pressable>
+              ))
+          )}
         </View>
       </Pressable>
     </View>

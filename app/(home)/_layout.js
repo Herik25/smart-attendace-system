@@ -15,6 +15,8 @@ export default function Layout() {
         <Stack.Screen name="addStudent" />
         <Stack.Screen name="attendanceReport" />
         <Stack.Screen name="sortingStudents" />
+        <Stack.Screen name="markAllStudents" />
+        <Stack.Screen name="deleteStudent" />
         <Stack.Screen name="[user]" />
       </Stack>
     </Provider>

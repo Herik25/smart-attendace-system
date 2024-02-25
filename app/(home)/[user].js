@@ -16,7 +16,7 @@ import axios from "axios";
 import DropdownComponent from "../../components/DropdownComponent";
 
 const subjectList = [
-  { label: "Flaag Ceremony", value: "Flag Ceremony" },
+  { label: "Flag Ceremony", value: "Flag Ceremony" },
   { label: "General Physics", value: "General Physics" },
   { label: "PE & Health", value: "PE & Health" },
   { label: "3I", value: "3I" },
@@ -65,10 +65,10 @@ const User = () => {
   };
 
   // formar of QR CODE encoding : 1&harsh parmar
-  console.log(params);
   const data = params.data.split("&");
   const id = data[0];
   const name = data[1];
+
   const attendanceData = {
     rollNo: id,
     studentName: name,
@@ -80,7 +80,6 @@ const User = () => {
 
   const submitAttendance = async () => {
     try {
-      console.log(attendanceData);
       // my device's wifi ip address: 192.168.0.102:8080
       // for pc ip address should be 10.0.2.2:8080
       const response = await axios.post(
@@ -91,7 +90,7 @@ const User = () => {
       if (response.status === 200) {
         Alert.alert(
           "Attendance Submited!",
-          `Attendance Submitted Successfully! for ${name}`
+          `Attendance Submitted Successfully for ${name}`
         );
 
         navigation.navigate("monitorHome")
@@ -137,7 +136,7 @@ const User = () => {
             height: 50,
             borderRadius: 8,
             padding: 10,
-            backgroundColor: "#4b6cb7",
+            backgroundColor: "black",
             alignItems: "center",
             justifyContent: "center",
           }}
@@ -176,7 +175,7 @@ const User = () => {
           <Pressable
             onPress={() => setAttendanceStatus("present")}
             style={{
-              backgroundColor: "#c4e0e5",
+              backgroundColor: "#f1f1f1",
               padding: 10,
               borderRadius: 8,
               flexDirection: "row",
@@ -195,7 +194,7 @@ const User = () => {
           <Pressable
             onPress={() => setAttendanceStatus("absent")}
             style={{
-              backgroundColor: "#c4e0e5",
+              backgroundColor: "#f1f1f1",
               padding: 10,
               borderRadius: 8,
               flexDirection: "row",
@@ -223,7 +222,7 @@ const User = () => {
           <Pressable
             onPress={() => setAttendanceStatus("halfday")}
             style={{
-              backgroundColor: "#c4e0e5",
+              backgroundColor: "#f1f1f1",
               padding: 10,
               borderRadius: 8,
               flexDirection: "row",
@@ -242,7 +241,7 @@ const User = () => {
           <Pressable
             onPress={() => setAttendanceStatus("holiday")}
             style={{
-              backgroundColor: "#c4e0e5",
+              backgroundColor: "#f1f1f1",
               padding: 10,
               borderRadius: 8,
               flexDirection: "row",
@@ -271,7 +270,7 @@ const User = () => {
           onPress={submitAttendance}
           style={{
             padding: 15,
-            backgroundColor: "#00c6ff",
+            backgroundColor: "black",
             width: 200,
             marginLeft: "auto",
             marginRight: "auto",
@@ -280,7 +279,7 @@ const User = () => {
           }}
         >
           <Text
-            style={{ textAlign: "center", color: "white", fontWeight: 500 }}
+            style={{ textAlign: "center", color: "white", fontWeight: "bold", fontSize: 16 }}
           >
             Submit Attendance
           </Text>

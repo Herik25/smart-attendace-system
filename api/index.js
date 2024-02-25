@@ -87,7 +87,11 @@ app.post("/attendance", async (req, res) => {
   try {
     const { rollNo, studentName, date, status, subject, time } = req.body;
 
-    const existingAttendance = await Attendance.findOne({ rollNo, date });
+    const existingAttendance = await Attendance.findOne({
+      rollNo,
+      date,
+      subject,
+    });
 
     if (existingAttendance) {
       existingAttendance.status = status;
@@ -213,5 +217,36 @@ app.get("/attendance-report-all-students", async (req, res) => {
   } catch (error) {
     console.error("Error generating attendance report:", error);
     res.status(500).json({ message: "Error generating the report" });
+  }
+});
+
+// Endpoint to delete a student by rollNo
+app.delete("/students/:rollNo", async (req, res) => {
+  try {
+    const rollNo = req.params.rollNo;
+
+    // Find the student by rollNo and delete it
+    await Student.findOneAndDelete({ rollNo });
+
+    // Delete the attendance records for the student
+    await Attendance.deleteMany({ rollNo });
+
+    res.status(200).json({ message: "Student deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting student:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// Endpoint to delete all attendance records
+app.delete("/attendance", async (req, res) => {
+  try {
+    // Delete all documents from the Attendance collection
+    await Attendance.deleteMany({});
+
+    res.status(200).json({ message: "All attendance records deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting attendance records:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });

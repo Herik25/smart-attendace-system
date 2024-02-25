@@ -9,7 +9,7 @@ import { authenticate } from '../../store/authSlice'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { getUserData } from './userActions'
 
-export const signUp = (fullName, email, password) => {
+export const signUp = (fullName, email, password, role) => {
     return async (dispatch) => {
         const app = getFirebaseApp();
         const auth = getAuth(app);
@@ -23,7 +23,7 @@ export const signUp = (fullName, email, password) => {
             const { uid, stsTokenManager } = result.user;
             const { accessToken, expirationTime } = stsTokenManager;
             const expiryDate = new Date(expirationTime);
-            const userData = await createUser(fullName, email, uid);
+            const userData = await createUser(fullName, email, uid, role);
             dispatch(authenticate({ token: accessToken, userData }));
             saveToDataStorage(accessToken, uid, expiryDate);
         } catch (error) {
@@ -75,13 +75,13 @@ export const signIn = (email, password) => {
 };
 
 
-const createUser = async (fullName, email, userId) => {
+const createUser = async (fullName, email, userId, role) => {
     const userData = {
         fullName,
         email,
         userId,
         signUpDate: new Date().toISOString(),
-        role: 'monitor'
+        role: role
     }
 
     const dbRef = ref(getDatabase())

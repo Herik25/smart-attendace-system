@@ -1,13 +1,23 @@
-import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 import axios from "axios";
 import SearchResults from "../../components/SearchResults";
+import { MaterialIcons } from "@expo/vector-icons";
 
-const students = () => {
-  const [students, setstudents] = useState([]);
+const DeleteStudent = () => {
+  const [students, setStudents] = useState([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
@@ -15,19 +25,27 @@ const students = () => {
   useEffect(() => {
     const fetchStudentsData = async () => {
       try {
-        // my device's wife ip address: 192.168.0.102:8080
-        // for pc ip address should be 10.0.2.2:8080
         const response = await axios.get("http://192.168.0.102:8080/students");
-        setIsLoading(false)
-        // console.log(response);
-        setstudents(response.data);
+        setStudents(response.data);
+        setIsLoading(false);
       } catch (error) {
-        console.log("error fetching employee data", error);
+        console.log("error fetching student data", error);
       }
     };
     fetchStudentsData();
-  }, []);
-  //   console.log(students);
+  }, [students]);
+
+  const deleteStudent = async (studentId) => {
+    try {
+      // Delete student from students collection
+      await axios.delete(`http://192.168.0.102:8080/students/${studentId}`);
+
+      Alert.alert("Deleted Succefully!", "Student deleted successfully");
+    } catch (error) {
+      console.log("error deleting student", error);
+    }
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <View
@@ -35,9 +53,6 @@ const students = () => {
           flexDirection: "row",
           alignItems: "center",
           backgroundColor: "white",
-          paddingVertical: 4,
-          borderBottomColor: "black",
-          borderBottomWidth: 1,
         }}
       >
         <Pressable onPress={() => router.back("monitorHome")}>
@@ -46,7 +61,6 @@ const students = () => {
             name="arrow-back"
             size={24}
             color="black"
-            onPress={() => router.push("monitorHome")}
           />
         </Pressable>
         <Pressable
@@ -70,7 +84,7 @@ const students = () => {
           />
           {students.length > 0 && (
             <View>
-              <Pressable onPress={() => router.push("addStudent ")}>
+              <Pressable>
                 <AntDesign name="pluscircle" size={24} color="black" />
               </Pressable>
             </View>
@@ -118,7 +132,7 @@ const students = () => {
             </Text>
           </View>
         </Pressable>
-        {/* <Pressable
+        <Pressable
           style={{
             marginRight: 10,
             alignItems: "center",
@@ -134,7 +148,7 @@ const students = () => {
               Delete
             </Text>
           </View>
-        </Pressable> */}
+        </Pressable>
       </Pressable>
       {isLoading ? (
         <View
@@ -173,7 +187,7 @@ const students = () => {
                     >
                       <View
                         style={{
-                          width: 50,
+                          width: 30,
                           height: 50,
                           borderRadius: 8,
                           padding: 10,
@@ -222,6 +236,21 @@ const students = () => {
                         </Text>
                       </View>
                     </View>
+                    <Pressable
+                      onPress={() => deleteStudent(item.rollNo)}
+                      style={{
+                        backgroundColor: "white",
+                        width: 50,
+                        height: 50,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 10,
+                        borderColor: "black",
+                        borderWidth: 2,
+                      }}
+                    >
+                      <MaterialIcons name="delete" size={26} color="black" />
+                    </Pressable>
                   </View>
                 );
               }
@@ -248,6 +277,6 @@ const students = () => {
   );
 };
 
-export default students;
+export default DeleteStudent;
 
 const styles = StyleSheet.create({});

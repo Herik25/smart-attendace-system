@@ -10,6 +10,6 @@ export const getUserData = async (userId) => {
         const snapshot = await get(userRef)
         return snapshot.val()
     } catch (err) {
-        console.log(err)
+        console.log("get UserData Err: ",err)
     }
 }

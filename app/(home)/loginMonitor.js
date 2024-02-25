@@ -85,7 +85,7 @@ const loginMonitor = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#2C2F30", padding: 16 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#181a1b", padding: 16 }}>
       <Text
         style={{
           fontFamily: "Poppins",
@@ -131,10 +131,12 @@ const loginMonitor = () => {
         <Pressable
           onPress={authHandler}
           style={{
-            backgroundColor: "#6D8983",
+            backgroundColor: "black",
             paddingVertical: 16,
             borderRadius: 8,
             marginVertical: 8,
+            borderWidth: 1,
+            borderColor: 'white'
           }}
         >
           {isLoading ? (
