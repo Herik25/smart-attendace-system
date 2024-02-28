@@ -38,7 +38,7 @@ const monitorHome = () => {
               color: "black",
             }}
           >
-            Smart Attendance System
+            Tambong
           </Text>
           <Entypo name="lock" size={20} color="black" />
         </View>

@@ -51,7 +51,7 @@ const guardianHome = () => {
               color: "black",
             }}
           >
-            Smart Attendance System
+            Tambong
           </Text>
           <Entypo name="lock" size={20} color="black" />
         </View>
@@ -381,7 +381,12 @@ const guardianHome = () => {
               </Text>
             </Pressable>
             <Pressable
-              onPress={() => router.push("markAllStudents")}
+              onPress={() =>
+                router.push({
+                  pathname: "/studentInfo",
+                  params: { selectedChild },
+                })
+              }
               style={{
                 backgroundColor: "white",
                 borderRadius: 6,
