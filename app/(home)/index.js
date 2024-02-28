@@ -71,6 +71,7 @@ const index = () => {
         }}
       >
         <TouchableOpacity
+        onPress={() => router.push("loginGuardian")}
           style={{
             backgroundColor: "black",
             paddingHorizontal: 20,

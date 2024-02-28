@@ -87,7 +87,6 @@ const adddetails = () => {
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: "white" }}>
-      <View style={{ padding: 10 }}>
         <View
           style={{
             borderBottomColor: "black",
@@ -100,6 +99,7 @@ const adddetails = () => {
             Add a New Student
           </Text>
         </View>
+      <View style={{ padding: 10 }}>
 
         <View style={{ marginVertical: 10 }}>
           <Text style={{ fontSize: 17, fontWeight: "bold" }}>

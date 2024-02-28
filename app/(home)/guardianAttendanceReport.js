@@ -1,8 +1,15 @@
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Alert,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import axios from "axios";
 import moment from "moment";
 import SearchResults from "../../components/SearchResults";
@@ -21,10 +28,35 @@ const subjectList = [
   { label: "Flag Retreat", value: "Flag Retreat" },
 ];
 
-const attendanceReport = () => {
+const guardianAttendanceReport = () => {
   const router = useRouter();
   const [currentDate, setCurrentDate] = useState(moment());
   const [subject, setSubject] = useState("");
+  const params = useLocalSearchParams();
+  const [selectedChild, setSelectedChild] = useState("");
+  const [rollNo, setRollNo] = useState(0);
+
+  useEffect(() => {
+    if (Object.keys(params).length > 0) {
+      if (params.selectedChild !== "") {
+        setSelectedChild(params.selectedChild);
+        // console.log(selectedChild);
+        const data = selectedChild.split("&");
+        setRollNo(+data[0]);
+      }
+    }
+  }, [params]);
+
+  useEffect(() => {
+    if (Object.keys(params).length > 0) {
+      if (params.selectedChild === "") {
+        Alert.alert(
+          "Select Children!",
+          "please, select any children before seeing any data!"
+        );
+      }
+    }
+  }, []);
 
   const goToNextDay = () => {
     const nextDate = moment(currentDate).add(1, "days");
@@ -101,8 +133,18 @@ const attendanceReport = () => {
   //   console.log(students);
 
   const updatedStudents = studentsWithAttendace
-    .filter((item) => item.status && item.subject === subject) // filter the students with status and subjects
-    .sort((a, b) => a.rollNo - b.rollNo); // sort the students according to the roll no
+    .filter((item) => item.status && item.subject === subject)
+    .sort((a, b) => a.rollNo - b.rollNo);
+
+  // Find the index of the student with the specified roll number
+  const rollNoIndex = updatedStudents.findIndex(
+    (student) => +student.rollNo === rollNo
+  );
+  // If the student is found, move them to the beginning of the array
+  if (rollNoIndex !== -1) {
+    const studentToMove = updatedStudents.splice(rollNoIndex, 1)[0];
+    updatedStudents.unshift(studentToMove);
+  }
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -192,23 +234,29 @@ const attendanceReport = () => {
           </Pressable>
         </View>
 
-        <View style={{ marginHorizontal: 12 }}>
+        <View>
           {updatedStudents.length === 0 ? (
-            <View style={{ alignItems: 'center', justifyContent: 'center', minHeight: '65%'}}>
-              <Text style={{ fontSize: 16, marginVertical: 8 }}>No Data Available!!</Text>
-              <Text style={{ fontSize: 20}}>Select Any Subject</Text>
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: "65%",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 16,
+                  marginVertical: 8,
+                  marginHorizontal: 12,
+                }}
+              >
+                No Data Available!!
+              </Text>
+              <Text style={{ fontSize: 20 }}>Select Any Subject</Text>
             </View>
           ) : (
             updatedStudents.map((item, index) => (
               <Pressable
-                onPress={() =>
-                  router.push({
-                    pathname: "/[user]",
-                    params: {
-                      data: `${item.rollNo}&${item.studentName}`,
-                    },
-                  })
-                }
                 key={index}
                 style={{
                   flexDirection: "row",
@@ -218,6 +266,10 @@ const attendanceReport = () => {
                   paddingBottom: 10,
                   borderBottomColor: "#ccc",
                   borderBottomWidth: 1,
+                  marginHorizontal: rollNo === +item.rollNo ? 0 : 12,
+                  paddingHorizontal: rollNo === +item.rollNo && 12,
+                  paddingTop: rollNo === +item.rollNo ? 10 : 0,
+                  backgroundColor: rollNo === +item.rollNo && "#ccc",
                 }}
               >
                 <View
@@ -228,7 +280,9 @@ const attendanceReport = () => {
                     justifyContent: "center",
                   }}
                 >
-                  <Text style={{ color: "black", fontSize: 20, fontWeight: 'bold' }}>
+                  <Text
+                    style={{ color: "black", fontSize: 20, fontWeight: "bold" }}
+                  >
                     {item?.rollNo}
                   </Text>
                 </View>
@@ -289,6 +343,6 @@ const attendanceReport = () => {
   );
 };
 
-export default attendanceReport;
+export default guardianAttendanceReport;
 
 const styles = StyleSheet.create({});

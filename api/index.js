@@ -190,7 +190,7 @@ app.get("/attendance-report-all-students", async (req, res) => {
       },
       {
         $lookup: {
-          from: "students", // Name of the employee collection
+          from: "students", // Name of the students collection
           localField: "_id",
           foreignField: "rollNo",
           as: "studentDetails",
@@ -250,3 +250,99 @@ app.delete("/attendance", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
+// fetching attendance for a sungle student for guardians section 
+
+app.get("/attendance-report-single-student", async (req, res) => {
+  try {
+    const { rollNo, name, month, year } = req.query;
+
+    console.log("Query parameters:", rollNo, name, month, year);
+    
+    // Calculate the start and end dates for the selected month and year
+    const startDate = moment(`${year}-${month}-01`, "YYYY-MM-DD")
+      .startOf("month")
+      .toDate();
+    const endDate = moment(startDate).endOf("month").toDate();
+
+    // Aggregate attendance data for the specified student and date range
+    const report = await Attendance.aggregate([
+      {
+        $match: {
+          $expr: {
+            $and: [
+              {
+                $eq: [
+                  { $month: { $dateFromString: { dateString: "$date" } } },
+                  parseInt(month),
+                ],
+              },
+              {
+                $eq: [
+                  { $year: { $dateFromString: { dateString: "$date" } } },
+                  parseInt(year),
+                ],
+              },
+              { $eq: ["$rollNo", rollNo] },
+              { $eq: ["$studentName", name] },
+            ],
+          },
+        },
+      },
+      {
+        $group: {
+          _id: "$rollNo",
+          present: {
+            $sum: {
+              $cond: { if: { $eq: ["$status", "present"] }, then: 1, else: 0 },
+            },
+          },
+          absent: {
+            $sum: {
+              $cond: { if: { $eq: ["$status", "absent"] }, then: 1, else: 0 },
+            },
+          },
+          halfday: {
+            $sum: {
+              $cond: { if: { $eq: ["$status", "halfday"] }, then: 1, else: 0 },
+            },
+          },
+          holiday: {
+            $sum: {
+              $cond: { if: { $eq: ["$status", "holiday"] }, then: 1, else: 0 },
+            },
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "students", // Name of the student collection
+          localField: "_id",
+          foreignField: "rollNo",
+          as: "studentDetails",
+        },
+      },
+      {
+        $unwind: "$studentDetails", // Unwind the studentDetails array
+      },
+      {
+        $project: {
+          _id: 1,
+          present: 1,
+          absent: 1,
+          halfday: 1,
+          name: "$studentDetails.studentName",
+          className: "$studentDetails.studentClass",
+          addresses: "$studentDetails.address",
+          rollNo: "$studentDetails.rollNo",
+        },
+      },
+    ]);
+
+    res.status(200).json({ report });
+  } catch (error) {
+    console.error("Error generating attendance report for a single student:", error);
+    res.status(500).json({ message: "Error generating the report" });
+  }
+});
+

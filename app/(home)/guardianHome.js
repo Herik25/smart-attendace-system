@@ -1,19 +1,32 @@
 import { Text, StyleSheet, View, ScrollView, Pressable } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { Component, useCallback, useEffect } from "react";
+import React, { Component, useCallback, useEffect, useState } from "react";
 import { Feather } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { Octicons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
-import { SplashScreen, useRouter } from "expo-router";
+import { SplashScreen, useLocalSearchParams, useRouter } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
-import { FontAwesome6 } from "@expo/vector-icons";
+import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome5 } from "@expo/vector-icons";
 
-const monitorHome = () => {
+const guardianHome = () => {
   const router = useRouter();
+  const params = useLocalSearchParams();
+
+  const [selectedChild, setSelectedChild] = useState("");
+
+  useEffect(() => {
+    if (Object.keys(params).length > 0) {
+      if (params.selectedChild !== "") {
+        setSelectedChild(params.selectedChild);
+        console.log(selectedChild);
+      }
+    }
+  }, [params]);
 
   return (
     <LinearGradient colors={["#f1f1f1", "#f1f1f1"]} style={{ flex: 1 }}>
@@ -52,7 +65,7 @@ const monitorHome = () => {
             }}
           >
             <Pressable
-              onPress={() => router.push("students")}
+              onPress={() => router.push("guardianStudentsList")}
               style={{
                 // backgroundColor: "#CCCDE3",
                 backgroundColor: "white",
@@ -84,7 +97,7 @@ const monitorHome = () => {
               </Text>
             </Pressable>
             <Pressable
-              onPress={() => router.push("scanner")}
+              onPress={() => router.push("selectChildren")}
               style={{
                 // backgroundColor: "#CCCDE3",
                 backgroundColor: "#fff",
@@ -109,10 +122,10 @@ const monitorHome = () => {
                   borderWidth: 2,
                 }}
               >
-                <MaterialIcons name="qr-code-scanner" size={24} color="black" />
+                <FontAwesome5 name="address-card" size={24} color="black" />
               </View>
               <Text style={{ marginTop: 7, fontWeight: "bold" }}>
-                Mark Attendance
+                Select Children
               </Text>
             </Pressable>
           </View>
@@ -128,7 +141,12 @@ const monitorHome = () => {
             }}
           >
             <Pressable
-              onPress={() => router.push("attendanceReport")}
+              onPress={() =>
+                router.push({
+                  pathname: "/guardianAttendanceReport",
+                  params: { selectedChild },
+                })
+              }
               style={{
                 // backgroundColor: "#D5CCE3",
                 backgroundColor: "black",
@@ -177,7 +195,12 @@ const monitorHome = () => {
               </View>
             </Pressable>
             <Pressable
-              onPress={() => router.push("summaryReport")}
+              onPress={() =>
+                router.push({
+                  pathname: "/guardianSummary",
+                  params: { selectedChild },
+                })
+              }
               style={{
                 backgroundColor: "black",
                 borderRadius: 6,
@@ -293,7 +316,7 @@ const monitorHome = () => {
                   justifyContent: "center",
                 }}
               >
-                <AntDesign name="adduser" size={24} color="black" />
+                <FontAwesome5 name="user-edit" size={24} color="black" />
               </View>
               <Text
                 style={{
@@ -304,7 +327,7 @@ const monitorHome = () => {
                   color: "white",
                 }}
               >
-                Add Students
+                Update Profile
               </Text>
               <View
                 style={{
@@ -351,10 +374,10 @@ const monitorHome = () => {
                   justifyContent: "center",
                 }}
               >
-                <FontAwesome6 name="sort" size={24} color="white" />
+                <FontAwesome name="pie-chart" size={20} color="white" />
               </View>
               <Text style={{ marginTop: 7, fontWeight: "bold" }}>
-                Students Sorting
+                Full Report
               </Text>
             </Pressable>
             <Pressable
@@ -380,14 +403,10 @@ const monitorHome = () => {
                   justifyContent: "center",
                 }}
               >
-                <Ionicons
-                  name="checkmark-circle-outline"
-                  size={24}
-                  color="white"
-                />
+               <Entypo name="info-with-circle" size={20} color="white" />
               </View>
               <Text style={{ marginTop: 7, fontWeight: "bold" }}>
-                Mark All Students
+                Student Info
               </Text>
             </Pressable>
           </View>
@@ -400,7 +419,7 @@ const monitorHome = () => {
             }}
           >
             <Pressable
-              onPress={() => router.push("deleteStudent")}
+              onPress={() => router.push("weeklySchedule")}
               style={{
                 // backgroundColor: "#D0C0EA",
                 backgroundColor: "white",
@@ -423,12 +442,14 @@ const monitorHome = () => {
                   justifyContent: "center",
                 }}
               >
-                <Ionicons name="remove-circle-outline" size={24} color="white" />
+                <MaterialIcons name="schedule" size={24} color="white" />
               </View>
-              <Text style={{ marginTop: 7, fontWeight: 'bold' }}>Delete Student</Text>
+              <Text style={{ marginTop: 7, fontWeight: "bold" }}>
+                Weekly Schedule
+              </Text>
             </Pressable>
             <Pressable
-              onPress={() => router.push("deleteAllAttendance")}
+              onPress={() => router.push("contactInfo")}
               style={{
                 backgroundColor: "white",
                 borderRadius: 6,
@@ -437,7 +458,7 @@ const monitorHome = () => {
                 justifyContent: "center",
                 flex: 1,
                 borderWidth: 2,
-                borderColor: 'black'
+                borderColor: "black",
               }}
             >
               <View
@@ -450,9 +471,11 @@ const monitorHome = () => {
                   justifyContent: "center",
                 }}
               >
-                <AntDesign name="delete" size={24} color="white" />
+                <FontAwesome5 name="school" size={20} color="white" />
               </View>
-              <Text style={{ marginTop: 7, fontWeight: 'bold' }}>Delete All Attendance</Text>
+              <Text style={{ marginTop: 7, fontWeight: "bold" }}>
+                Contact Info
+              </Text>
             </Pressable>
           </View>
         </View>
@@ -463,4 +486,4 @@ const monitorHome = () => {
 
 const styles = StyleSheet.create({});
 
-export default monitorHome;
+export default guardianHome;

@@ -34,7 +34,7 @@ const SearchResults = ({ data, input, setInput }) => {
                     {item?.studentName}
                   </Text>
                   <Text style={{ marginTop: 5, color: "gray" }}>
-                    {item?.studentClass}th (Roll No: {item?.rollNo})
+                    {item?.studentClass} (Roll No: {item?.rollNo})
                   </Text>
                 </View>
               </View>

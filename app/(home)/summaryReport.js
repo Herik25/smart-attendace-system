@@ -133,7 +133,7 @@ const summaryReport = () => {
                       {item?.name}
                     </Text>
                     <Text style={{ marginTop: 5, color: "gray" }}>
-                      {item?.className}th (Roll No: {item?.rollNo})
+                      {item?.className} (Roll No: {item?.rollNo})
                     </Text>
                   </View>
                 </View>

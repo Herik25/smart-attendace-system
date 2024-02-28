@@ -22,7 +22,7 @@ const students = () => {
         // console.log(response);
         setstudents(response.data);
       } catch (error) {
-        console.log("error fetching employee data", error);
+        console.log("error fetching students data", error);
       }
     };
     fetchStudentsData();
@@ -218,7 +218,7 @@ const students = () => {
                           {item?.studentName}
                         </Text>
                         <Text style={{ marginTop: 5, color: "gray" }}>
-                          Standard: {item?.studentClass}th
+                          Standard: {item?.studentClass}
                         </Text>
                       </View>
                     </View>

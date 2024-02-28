@@ -143,7 +143,7 @@ const markAllStudents = () => {
         // console.log(response);
         setStudents(response.data);
       } catch (error) {
-        console.log("error fetching employee data", error);
+        console.log("error fetching students data", error);
       }
     };
     fetchStudentsData();
@@ -484,7 +484,7 @@ const markAllStudents = () => {
                     {item?.studentName}
                   </Text>
                   <Text style={{ marginTop: 5, color: "gray" }}>
-                    Class: {item?.studentClass}th
+                    Class: {item?.studentClass}
                   </Text>
                 </View>
                 {item?.status && (
