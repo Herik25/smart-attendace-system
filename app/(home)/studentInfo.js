@@ -1,4 +1,11 @@
-import { Alert, Image, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import axios from "axios";
@@ -10,44 +17,34 @@ const studentInfo = () => {
   const [selectedChild, setSelectedChild] = useState("");
   const [rollNo, setRollNo] = useState(0);
   const [name, setName] = useState("");
-  const [student, setStudent] = useState({
-    __v: 0,
-    _id: "65d47145524a2aad135822df",
-    address: "Poblacion ",
-    dateOfBirth: "12/01/2006",
-    gender: "Female",
-    guardianName: "Hello world",
-    phoneNumber: "1234567890",
-    rollNo: "2",
-    studentClass: "12th",
-    studentName: "Shella luna",
-  });
+  const [student, setStudent] = useState({});
+  const [loading, setLoading] = useState(true);
 
   qrCodeData = `${student.rollNo}&${student.studentName}`;
 
-  //   useEffect(() => {
-  //     if (Object.keys(params).length > 0) {
-  //       if (params.selectedChild !== "") {
-  //         setSelectedChild(params.selectedChild);
-  //         // console.log(selectedChild);
-  //         const data = selectedChild.split("&");
-  //         setRollNo(+data[0]);
-  //         setName(data[1]);
-  //       }
-  //     }
-  //   }, [params]);
+  useEffect(() => {
+    if (Object.keys(params).length > 0) {
+      if (params.selectedChild !== "") {
+        setSelectedChild(params.selectedChild);
+        // console.log(selectedChild);
+        const data = selectedChild.split("&");
+        setRollNo(+data[0]);
+        setName(data[1]);
+      }
+    }
+  }, [params]);
 
-  //   useEffect(() => {
-  //     if (Object.keys(params).length > 0) {
-  //       if (params.selectedChild === "") {
-  //         Alert.alert(
-  //           "Select Children!",
-  //           "please, select any children before seeing any data!"
-  //         );
-  //         navigation.navigate("guardianHome")
-  //       }
-  //     }
-  //   }, []);
+  useEffect(() => {
+    if (Object.keys(params).length > 0) {
+      if (params.selectedChild === "") {
+        Alert.alert(
+          "Select Children!",
+          "please, select any children before seeing any data!"
+        );
+        navigation.navigate("guardianHome");
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const fetchStudentsData = async () => {
@@ -59,6 +56,7 @@ const studentInfo = () => {
             `http://192.168.0.102:8080/students/${rollNo}`
           );
           setStudent(response.data);
+          setLoading(false);
         }
         // console.log(response);
       } catch (error) {
@@ -81,7 +79,11 @@ const studentInfo = () => {
       >
         <Text style={{ fontSize: 17, fontWeight: "bold" }}>Student Info</Text>
       </View>
-      {student ? (
+      {loading ? (
+        <View style={{ height: "100%", alignItems: 'center', justifyContent: 'center' }}>
+          <ActivityIndicator size="large" color="black" />
+        </View>
+      ) : (
         <View style={{ padding: 10, marginVertical: 15 }}>
           <View
             style={{
@@ -100,7 +102,7 @@ const studentInfo = () => {
                   borderRadius: 14,
                   borderWidth: 2,
                   borderColor: "black",
-                  resizeMode: 'contain'
+                  resizeMode: "contain",
                 }}
                 source={{
                   uri: "https://th.bing.com/th/id/OIP.6liK7l1h-XY0PQCANMcPuAHaHa?w=1080&h=1080&rs=1&pid=ImgDetMain",
@@ -115,7 +117,7 @@ const studentInfo = () => {
                   borderRadius: 14,
                   borderWidth: 2,
                   borderColor: "black",
-                  resizeMode: 'contain'
+                  resizeMode: "contain",
                 }}
                 source={{
                   uri: "https://www.savingourkidsworld.org/wp-content/uploads/2021/04/business-male-icon.jpg",
@@ -413,8 +415,6 @@ const studentInfo = () => {
             </View>
           </View>
         </View>
-      ) : (
-        <Text>Loading...</Text>
       )}
     </View>
   );
