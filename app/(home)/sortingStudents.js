@@ -107,20 +107,6 @@ const sortingStudents = () => {
         );
         const attendanceData = response.data;
 
-        // Map through students to add attendance data
-        // const studentsWithAttendanceData = students.map((student) => {
-        //   const attendanceRecord = attendanceData.find((record) => {
-        //     return record.rollNo === student.rollNo;
-        //   });
-
-        //   return {
-        //     ...student,
-        //     status: attendanceRecord ? attendanceRecord.status : "",
-        //     subject: attendanceRecord ? attendanceRecord.subject : "",
-        //   };
-        // });
-
-        // Update studentsWithAttendance state
         setStudentsWithAttendance(attendanceData);
       } catch (error) {
         console.log("error fetching attendance data", error);

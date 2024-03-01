@@ -11,9 +11,10 @@ import moment from "moment";
 import axios from "axios";
 import { AntDesign } from "@expo/vector-icons";
 import { DataTable } from "react-native-paper";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useNavigation } from "expo-router";
 
 const guardianSummary = () => {
+  const navigation = useNavigation()
   const [attendanceData, setAttendanceData] = useState([]);
   const [currentDate, setCurrentDate] = useState(moment());
   const totalSubjects = 200;
@@ -41,6 +42,7 @@ const guardianSummary = () => {
           "Select Children!",
           "please, select any children before seeing any data!"
         );
+        navigation.navigate("guardianHome")
       }
     }
   }, []);

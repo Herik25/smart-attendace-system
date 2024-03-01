@@ -1,6 +1,8 @@
 import {
+  ActivityIndicator,
   Alert,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -51,6 +53,9 @@ const markAllStudents = () => {
   const [open, setOpen] = useState(false);
   const [newSubject, setNewSubject] = useState("");
   const [time, setTime] = useState("");
+  const [filteredStudents, setFilteredStudents] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [submitLoading, setSubmitLoading] = useState(false);
 
   const goToNextDay = () => {
     const nextDate = moment(currentDate).add(1, "days");
@@ -74,6 +79,7 @@ const markAllStudents = () => {
         // for pc ip address should be 10.0.2.2:8080
         const response = await axios.get("http://192.168.0.102:8080/students");
         setStudents(response.data);
+        setIsLoading(false);
       } catch (error) {
         console.log("error fetching student data", error);
       }
@@ -83,12 +89,15 @@ const markAllStudents = () => {
   const [attendance, setAttendance] = useState([]);
   const fetchAttendanceData = async () => {
     try {
+      setIsLoading(true);
       const response = await axios.get(`http://192.168.0.102:8080/attendance`, {
         params: {
           date: currentDate.format("MMMM D, YYYY"),
         },
       });
       setAttendance(response.data);
+      setFilteredStudents(response.data);
+      setIsLoading(false);
     } catch (error) {
       console.log("error fetching attendance data", error);
     }
@@ -96,11 +105,12 @@ const markAllStudents = () => {
 
   useEffect(() => {
     fetchAttendanceData();
-  }, [currentDate]);
+  }, [currentDate, subject]);
 
   useEffect(() => {
     const fetchAttendanceData = async () => {
       try {
+        setIsLoading(true);
         const response = await axios.get(
           `http://192.168.0.102:8080/attendance`,
           {
@@ -111,37 +121,26 @@ const markAllStudents = () => {
         );
         const attendanceData = response.data;
 
-        // Map through students to add attendance data
-        const studentsWithAttendaceData = students.map((student) => {
-          const attendanceRecord = attendanceData.find((record) => {
-            return record.rollNo === student.rollNo;
-          });
-
-          return {
-            ...student,
-            status: attendanceRecord ? attendanceRecord.status : "",
-            subject: attendanceRecord ? attendanceRecord.subject : "",
-          };
-        });
-
-        // Update studentsWithAttendance state
-        setStudentsWithAttendance(studentsWithAttendaceData);
+        setStudentsWithAttendance(attendanceData);
+        setIsLoading(false);
       } catch (error) {
         console.log("error fetching attendance data", error);
       }
     };
 
     fetchAttendanceData();
-  }, [currentDate, students]);
+  }, [currentDate, students, subject]);
 
   useEffect(() => {
     const fetchStudentsData = async () => {
       try {
         // my device's wife ip address: 192.168.0.102:8080
         // for pc ip address should be 10.0.2.2:8080
+        setIsLoading(true);
         const response = await axios.get("http://192.168.0.102:8080/students");
         // console.log(response);
         setStudents(response.data);
+        setIsLoading(false);
       } catch (error) {
         console.log("error fetching students data", error);
       }
@@ -160,12 +159,13 @@ const markAllStudents = () => {
     // Sort students based on roll number and current sorting order
     const sortedStudents = studentsWithAttendance.sort((a, b) => {
       if (newSortOrder === "asc") {
-        return a.rollNo - b.rollNo;
+        return a.rollNo - b.rollNo; // Return the result of the comparison
       } else {
-        return b.rollNo - a.rollNo;
+        return b.rollNo - a.rollNo; // Return the result of the comparison
       }
     });
-    setStudentsWithAttendance(sortedStudents); // Update state with sorted students
+
+    setFilteredStudents(sortedStudents); // Update state with sorted students
   };
 
   const [sortDetail, setSortDetail] = useState("asc");
@@ -203,23 +203,24 @@ const markAllStudents = () => {
   const [checkedStudentsData, setCheckedStudentsData] = useState([]);
   const [checkedList, setCheckedList] = useState({});
 
-  const toggleStudentCheckbox = (index) => {
-    const updatedCheckedList = { ...checkedList };
-    updatedCheckedList[index] = !updatedCheckedList[index];
+  const toggleStudentCheckbox = (student) => {
+    const isChecked = checkedList[student._id]; // Check if the student is already checked
+    const updatedCheckedList = { ...checkedList, [student._id]: !isChecked }; // Toggle the checked status for the student
 
-    // Filter the students based on the checkedList and update the state variable
+    // Filter the students based on the updatedCheckedList and update the state variable
     const checkedStudentsData = studentsWithAttendance.filter(
-      (_, i) => updatedCheckedList[i]
+      (s) => updatedCheckedList[s._id]
     );
 
     setCheckedList(updatedCheckedList);
     setCheckedStudentsData(checkedStudentsData);
+    console.log(checkedStudentsData);
   };
 
   const toggleSelectAll = () => {
     const updatedCheckedList = {};
-    studentsWithAttendance.forEach((_, index) => {
-      updatedCheckedList[index] = !selectAll;
+    studentsWithAttendance.forEach((student) => {
+      updatedCheckedList[student._id] = !selectAll; // Toggle the checked status for each student
     });
 
     const checkedStudentsData = selectAll ? [] : [...studentsWithAttendance];
@@ -230,11 +231,14 @@ const markAllStudents = () => {
   };
 
   const handleSubmit = async () => {
+    setSubmitLoading(true);
     if (newSubject === "" || time === "") {
       Alert.alert(
         "Slection Error!!!",
         "Select any subject&time and try again!"
       );
+      setOpen(false);
+      setIsLoading(false);
       return;
     }
     try {
@@ -262,6 +266,8 @@ const markAllStudents = () => {
 
       // After marking attendance for all students, display a success message or perform any necessary actions
       console.log("Attendance marked for all students successfully!");
+      setSubmitLoading(!submitLoading);
+      setOpen(!open);
     } catch (error) {
       console.log("Error marking attendance for all students:", error);
     }
@@ -416,105 +422,127 @@ const markAllStudents = () => {
           </Pressable>
         </View>
 
-        <View style={{ marginHorizontal: 12 }}>
-          {studentsWithAttendance
-            .filter(
-              (item) => item.subject === subject && item.status === "present"
-            ) // filter the students with status
-            .sort((a, b) => a.rollNo - b.rollNo) // sort the students according to the roll no
-            .map((item, index) => (
-              <View
-                // onPress={() =>
-                //   router.push({
-                //     pathname: "/[user]",
-                //     params: {
-                //       data: `${item.rollNo}&${item.studentName}`,
-                //     },
-                //   })
-                // }
-                key={index}
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  gap: 10,
-                  marginVertical: 6,
-                  paddingBottom: 10,
-                  borderBottomColor: "#ccc",
-                  borderBottomWidth: 1,
-                }}
-              >
-                <Checkbox
-                  color="black"
-                  status={checkedList[index] ? "checked" : "unchecked"}
-                  onPress={() => {
-                    toggleStudentCheckbox(index);
+        <ScrollView style={{ marginHorizontal: 12 }}>
+          {isLoading ? (
+            <View
+              style={{
+                minHeight: "60%",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <ActivityIndicator size="large" color="black" />
+            </View>
+          ) : (
+            studentsWithAttendance
+              .filter(
+                (item) => item.subject === subject && item.status === "present"
+              ) // filter the students with status
+              .sort((a, b) => a.rollNo - b.rollNo) // sort the students according to the roll no
+              .map((item, index) => (
+                <View
+                  // onPress={() =>
+                  //   router.push({
+                  //     pathname: "/[user]",
+                  //     params: {
+                  //       data: `${item.rollNo}&${item.studentName}`,
+                  //     },
+                  //   })
+                  // }
+                  key={index}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 10,
+                    marginVertical: 6,
+                    paddingBottom: 10,
+                    borderBottomColor: "#ccc",
+                    borderBottomWidth: 1,
                   }}
-                />
+                >
+                  <Checkbox
+                    color="black"
+                    status={checkedList[item._id] ? "checked" : "unchecked"}
+                    onPress={() => toggleStudentCheckbox(item)}
+                  />
 
-                <View
-                  style={{
-                    width: 10,
-                    height: 50,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    transform: [{ translateX: -6 }],
-                  }}
-                >
-                  <Text style={{ color: "black", fontSize: 18, fontWeight: 'bold' }}>
-                    {item?.rollNo}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    width: 50,
-                    height: 50,
-                    borderRadius: 8,
-                    padding: 10,
-                    backgroundColor: "black",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Text style={{ color: "white", fontSize: 18, fontWeight: 'bold' }}>
-                    {item?.studentName?.charAt(0).toUpperCase()}
-                  </Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 16, fontWeight: "bold" }}>
-                    {item?.studentName}
-                  </Text>
-                  <Text style={{ marginTop: 5, color: "gray" }}>
-                    Class: {item?.studentClass}
-                  </Text>
-                </View>
-                {item?.status && (
+                  <View
+                    style={{
+                      width: 10,
+                      height: 50,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      transform: [{ translateX: -6 }],
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "black",
+                        fontSize: 18,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {item?.rollNo}
+                    </Text>
+                  </View>
                   <View
                     style={{
                       width: 50,
                       height: 50,
                       borderRadius: 8,
                       padding: 10,
-                      backgroundColor: `${
-                        item.status === "absent" ? "red" : "green"
-                      }`,
+                      backgroundColor: "black",
                       alignItems: "center",
                       justifyContent: "center",
                     }}
                   >
                     <Text
                       style={{
-                        fontSize: 16,
                         color: "white",
+                        fontSize: 18,
                         fontWeight: "bold",
                       }}
                     >
-                      {item.status.charAt(0).toUpperCase()}
+                      {item?.studentName?.charAt(0).toUpperCase()}
                     </Text>
                   </View>
-                )}
-              </View>
-            ))}
-        </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                      {item?.studentName}
+                    </Text>
+                    <Text style={{ marginTop: 5, color: "gray" }}>
+                      Class: {item?.studentClass}
+                    </Text>
+                  </View>
+                  {item?.status && (
+                    <View
+                      style={{
+                        width: 50,
+                        height: 50,
+                        borderRadius: 8,
+                        padding: 10,
+                        backgroundColor: `${
+                          item.status === "absent" ? "red" : "green"
+                        }`,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          color: "white",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {item.status.charAt(0).toUpperCase()}
+                      </Text>
+                    </View>
+                  )}
+                </View>
+              ))
+          )}
+        </ScrollView>
       </Pressable>
       <Pressable
         style={{
@@ -587,7 +615,7 @@ const markAllStudents = () => {
                   <Text
                     style={{ color: "black", fontSize: 18, fontWeight: "bold" }}
                   >
-                    Submit
+                    {submitLoading ? <ActivityIndicator size="small" color="black"  /> : "Submit" }
                   </Text>
                 </View>
               </Pressable>

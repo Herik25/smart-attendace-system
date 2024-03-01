@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Alert,
   Dimensions,
   ScrollView,
@@ -27,6 +28,7 @@ const fullReport = () => {
   const [selectedChild, setSelectedChild] = useState("");
   const [rollNo, setRollNo] = useState(0);
   const [name, setName] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const data = [
     {
@@ -107,6 +109,7 @@ const fullReport = () => {
           }
         );
         setAttendanceData(response.data.report);
+        setIsLoading(false);
       }
     } catch (error) {
       console.log("Error fetching attandance: ", error);
@@ -118,10 +121,12 @@ const fullReport = () => {
       // my device's wifi ip address: 192.168.0.102:8080
       // for pc ip address should be 10.0.2.2:8080
       if (rollNo !== 0 && name !== "") {
+        setIsLoading(true);
         const response = await axios.get(
           `http://192.168.0.102:8080/attendance/${rollNo}`
         );
         setAllAttendance(response.data);
+        setIsLoading(false);
       }
     } catch (error) {
       console.log("Error fetching attandance: ", error);
@@ -162,7 +167,7 @@ const fullReport = () => {
 
   const calculateTodayAttendance = () => {
     // Get today's date
-    const today = moment().format("MMMM DD, YYYY");
+    const today = moment().format("MMMM D, YYYY");
 
     // Filter the attendance data for today and count the "present" status
     const totalTodayAttendance = allAttendance.filter(
@@ -197,434 +202,455 @@ const fullReport = () => {
       >
         <Text style={{ fontSize: 17, fontWeight: "bold" }}>Full Report</Text>
       </View>
-      <View style={{ borderBottomColor: "black", borderBottomWidth: 1 }}>
-        <Text
-          style={{
-            textAlign: "center",
-            fontSize: 20,
-            fontWeight: "bold",
-            marginTop: 10,
-          }}
-        >
-          Pie Chart
-        </Text>
-        <PieChart
-          data={data}
-          width={screenWidth}
-          height={220}
-          chartConfig={{
-            backgroundColor: "#e26a00",
-            backgroundGradientFrom: "#fb8c00",
-            backgroundGradientTo: "#ffa726",
-            decimalPlaces: 2, // optional, defaults to 2dp
-            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-            labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-            style: {
-              borderRadius: 16,
-            },
-            propsForDots: {
-              r: "6",
-              strokeWidth: "2",
-              stroke: "#ffa726",
-            },
-          }}
-          bezier
-          style={{
-            marginVertical: 8,
-            borderRadius: 16,
-          }}
-          accessor={"attendance"}
-          backgroundColor={"transparent"}
-          paddingLeft={"15"}
-          center={[10, 10]}
-          absolute
-        />
-      </View>
-      <View>
+      {isLoading ? (
         <View
           style={{
-            paddingVertical: 20,
-            paddingHorizontal: 20,
-            borderBottomColor: "black",
-            borderBottomWidth: 1,
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#fff",
+            marginTop: 120
           }}
         >
-          <View style={{ flexDirection: "row", gap: 20, alignItems: "center" }}>
-            <View
+          <ActivityIndicator size="large" color="black" />
+        </View>
+      ) : (
+        <View>
+          <View style={{ borderBottomColor: "black", borderBottomWidth: 1 }}>
+            <Text
               style={{
-                borderWidth: 2,
-                borderColor: "black",
-                borderRadius: 14,
-                maxHeight: 115,
+                textAlign: "center",
+                fontSize: 20,
+                fontWeight: "bold",
+                marginTop: 10,
               }}
             >
-              <Text
-                style={{
-                  fontSize: 20,
-                  fontWeight: "bold",
-                  paddingHorizontal: 20,
-                  paddingVertical: 10,
-                  borderBottomColor: "black",
-                  borderBottomWidth: 2,
-                  textAlign: "center",
-                }}
-              >
-                Monthly
-              </Text>
-              <Text
-                style={{
-                  fontSize: 26,
-                  fontWeight: "bold",
-                  paddingHorizontal: 20,
-                  paddingVertical: 10,
-                  textAlign: "center",
-                }}
-              >
-                {/* 0.5% */}
-                {calculatePercentage(attendanceData[0]?.present, totalSubjects)}
-                %
-              </Text>
-            </View>
+              Pie Chart
+            </Text>
+            <PieChart
+              data={data}
+              width={screenWidth}
+              height={220}
+              chartConfig={{
+                backgroundColor: "#e26a00",
+                backgroundGradientFrom: "#fb8c00",
+                backgroundGradientTo: "#ffa726",
+                decimalPlaces: 2, // optional, defaults to 2dp
+                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                style: {
+                  borderRadius: 16,
+                },
+                propsForDots: {
+                  r: "6",
+                  strokeWidth: "2",
+                  stroke: "#ffa726",
+                },
+              }}
+              bezier
+              style={{
+                marginVertical: 8,
+                borderRadius: 16,
+              }}
+              accessor={"attendance"}
+              backgroundColor={"transparent"}
+              paddingLeft={"15"}
+              center={[10, 10]}
+              absolute
+            />
+          </View>
+          <View>
             <View
               style={{
-                borderWidth: 1,
-                borderColor: "black",
-                borderRadius: 6,
-                flexDirection: "row",
-                flex: 1,
+                paddingVertical: 20,
+                paddingHorizontal: 20,
+                borderBottomColor: "black",
+                borderBottomWidth: 1,
               }}
             >
               <View
-                style={{
-                  borderRightColor: "black",
-                  borderRightWidth: 1,
-                  flex: 1,
-                }}
+                style={{ flexDirection: "row", gap: 20, alignItems: "center" }}
               >
                 <View
                   style={{
-                    alignItems: "center",
-                    paddingHorizontal: 10,
-                    paddingVertical: 10,
-                    borderBottomColor: "black",
-                    borderBottomWidth: 1,
-                    width: "201%",
-                    backgroundColor: "black",
-                    borderTopLeftRadius: 4,
-                    borderTopRightRadius: 4,
+                    borderWidth: 2,
+                    borderColor: "black",
+                    borderRadius: 14,
+                    maxHeight: 115,
                   }}
                 >
-                  <Text style={{ color: "white", fontWeight: "bold" }}>
-                    Total Attendance
+                  <Text
+                    style={{
+                      fontSize: 20,
+                      fontWeight: "bold",
+                      paddingHorizontal: 20,
+                      paddingVertical: 10,
+                      borderBottomColor: "black",
+                      borderBottomWidth: 2,
+                      textAlign: "center",
+                    }}
+                  >
+                    Monthly
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 26,
+                      fontWeight: "bold",
+                      paddingHorizontal: 20,
+                      paddingVertical: 10,
+                      textAlign: "center",
+                    }}
+                  >
+                    {/* 0.5% */}
+                    {calculatePercentage(
+                      attendanceData[0]?.present,
+                      totalSubjects
+                    )}
+                    %
                   </Text>
                 </View>
                 <View
                   style={{
-                    alignItems: "center",
-                    paddingHorizontal: 10,
-                    paddingVertical: 10,
-                    borderBottomColor: "black",
-                    borderBottomWidth: 1,
+                    borderWidth: 1,
+                    borderColor: "black",
+                    borderRadius: 6,
+                    flexDirection: "row",
+                    flex: 1,
                   }}
                 >
-                  <Text>Daily</Text>
-                </View>
+                  <View
+                    style={{
+                      borderRightColor: "black",
+                      borderRightWidth: 1,
+                      flex: 1,
+                    }}
+                  >
+                    <View
+                      style={{
+                        alignItems: "center",
+                        paddingHorizontal: 10,
+                        paddingVertical: 10,
+                        borderBottomColor: "black",
+                        borderBottomWidth: 1,
+                        width: "201%",
+                        backgroundColor: "black",
+                        borderTopLeftRadius: 4,
+                        borderTopRightRadius: 4,
+                      }}
+                    >
+                      <Text style={{ color: "white", fontWeight: "bold" }}>
+                        Total Attendance
+                      </Text>
+                    </View>
+                    <View
+                      style={{
+                        alignItems: "center",
+                        paddingHorizontal: 10,
+                        paddingVertical: 10,
+                        borderBottomColor: "black",
+                        borderBottomWidth: 1,
+                      }}
+                    >
+                      <Text>Daily</Text>
+                    </View>
 
-                <View
-                  style={{
-                    alignItems: "center",
-                    paddingHorizontal: 10,
-                    paddingVertical: 10,
-                    borderBottomColor: "black",
-                    borderBottomWidth: 1,
-                  }}
-                >
-                  <Text style={{ textAlign: "center" }}>Weekly</Text>
-                </View>
-                <View
-                  style={{
-                    alignItems: "center",
-                    paddingHorizontal: 10,
-                    paddingVertical: 10,
-                  }}
-                >
-                  <Text style={{ textAlign: "center" }}>Monthly</Text>
-                </View>
-              </View>
+                    <View
+                      style={{
+                        alignItems: "center",
+                        paddingHorizontal: 10,
+                        paddingVertical: 10,
+                        borderBottomColor: "black",
+                        borderBottomWidth: 1,
+                      }}
+                    >
+                      <Text style={{ textAlign: "center" }}>Weekly</Text>
+                    </View>
+                    <View
+                      style={{
+                        alignItems: "center",
+                        paddingHorizontal: 10,
+                        paddingVertical: 10,
+                      }}
+                    >
+                      <Text style={{ textAlign: "center" }}>Monthly</Text>
+                    </View>
+                  </View>
 
-              <View style={{ flex: 1 }}>
-                <View
-                  style={{
-                    alignItems: "center",
-                    paddingHorizontal: 10,
-                    paddingVertical: 10,
-                    borderBottomColor: "black",
-                    borderBottomWidth: 1,
-                  }}
-                >
-                  <Text> </Text>
-                </View>
-                <View
-                  style={{
-                    alignItems: "center",
-                    paddingHorizontal: 10,
-                    paddingVertical: 10,
-                    borderBottomColor: "black",
-                    borderBottomWidth: 1,
-                  }}
-                >
-                  <Text>10</Text>
-                </View>
+                  <View style={{ flex: 1 }}>
+                    <View
+                      style={{
+                        alignItems: "center",
+                        paddingHorizontal: 10,
+                        paddingVertical: 10,
+                        borderBottomColor: "black",
+                        borderBottomWidth: 1,
+                      }}
+                    >
+                      <Text> </Text>
+                    </View>
+                    <View
+                      style={{
+                        alignItems: "center",
+                        paddingHorizontal: 10,
+                        paddingVertical: 10,
+                        borderBottomColor: "black",
+                        borderBottomWidth: 1,
+                      }}
+                    >
+                      <Text>10</Text>
+                    </View>
 
-                <View
-                  style={{
-                    alignItems: "center",
-                    paddingHorizontal: 10,
-                    paddingVertical: 10,
-                    borderBottomColor: "black",
-                    borderBottomWidth: 1,
-                  }}
-                >
-                  <Text style={{ textAlign: "center" }}>50</Text>
-                </View>
-                <View
-                  style={{
-                    alignItems: "center",
-                    paddingHorizontal: 10,
-                    paddingVertical: 10,
-                  }}
-                >
-                  <Text style={{ textAlign: "center" }}>200</Text>
+                    <View
+                      style={{
+                        alignItems: "center",
+                        paddingHorizontal: 10,
+                        paddingVertical: 10,
+                        borderBottomColor: "black",
+                        borderBottomWidth: 1,
+                      }}
+                    >
+                      <Text style={{ textAlign: "center" }}>50</Text>
+                    </View>
+                    <View
+                      style={{
+                        alignItems: "center",
+                        paddingHorizontal: 10,
+                        paddingVertical: 10,
+                      }}
+                    >
+                      <Text style={{ textAlign: "center" }}>200</Text>
+                    </View>
+                  </View>
                 </View>
               </View>
             </View>
-          </View>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            paddingVertical: 20,
-            paddingHorizontal: 20,
-            gap: 20,
-            alignItems: "center",
-            borderBottomColor: "black",
-            borderBottomWidth: 1,
-          }}
-        >
-          <View
-            style={{
-              borderWidth: 2,
-              borderColor: "black",
-              borderRadius: 14,
-              maxHeight: 115,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 20,
-                fontWeight: "bold",
-                paddingHorizontal: 20,
-                paddingVertical: 10,
-                borderBottomColor: "black",
-                borderBottomWidth: 2,
-                textAlign: "center",
-              }}
-            >
-              Weekly
-            </Text>
-            <Text
-              style={{
-                fontSize: 26,
-                fontWeight: "bold",
-                paddingHorizontal: 20,
-                paddingVertical: 10,
-                textAlign: "center",
-              }}
-            >
-              {(totalWeeklyAttendance / 50) * 100}%
-            </Text>
-          </View>
-          <View
-            style={{
-              borderWidth: 1,
-              borderColor: "black",
-              borderRadius: 6,
-              flexDirection: "row",
-              flex: 1,
-              maxHeight: 85,
-            }}
-          >
             <View
               style={{
-                borderRightColor: "black",
-                borderRightWidth: 1,
-                flex: 1,
+                flexDirection: "row",
+                paddingVertical: 20,
+                paddingHorizontal: 20,
+                gap: 20,
+                alignItems: "center",
+                borderBottomColor: "black",
+                borderBottomWidth: 1,
               }}
             >
               <View
                 style={{
-                  alignItems: "center",
-                  paddingHorizontal: 10,
-                  paddingVertical: 10,
-                  borderBottomColor: "black",
-                  borderBottomWidth: 1,
-                  width: "201%",
-                  backgroundColor: "black",
-                  borderTopLeftRadius: 4,
-                  borderTopRightRadius: 4,
+                  borderWidth: 2,
+                  borderColor: "black",
+                  borderRadius: 14,
+                  maxHeight: 115,
                 }}
               >
-                <Text style={{ color: "white", fontWeight: "bold" }}>
-                  {currentWeekStart} - {currentWeekEnd}
+                <Text
+                  style={{
+                    fontSize: 20,
+                    fontWeight: "bold",
+                    paddingHorizontal: 20,
+                    paddingVertical: 10,
+                    borderBottomColor: "black",
+                    borderBottomWidth: 2,
+                    textAlign: "center",
+                  }}
+                >
+                  Weekly
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 26,
+                    fontWeight: "bold",
+                    paddingHorizontal: 20,
+                    paddingVertical: 10,
+                    textAlign: "center",
+                  }}
+                >
+                  {(totalWeeklyAttendance / 50) * 100}%
                 </Text>
               </View>
               <View
                 style={{
-                  alignItems: "center",
-                  paddingHorizontal: 10,
-                  paddingVertical: 10,
+                  borderWidth: 1,
+                  borderColor: "black",
+                  borderRadius: 6,
+                  flexDirection: "row",
+                  flex: 1,
+                  maxHeight: 85,
                 }}
               >
-                <Text>Mon-Fri</Text>
-              </View>
-            </View>
+                <View
+                  style={{
+                    borderRightColor: "black",
+                    borderRightWidth: 1,
+                    flex: 1,
+                  }}
+                >
+                  <View
+                    style={{
+                      alignItems: "center",
+                      paddingHorizontal: 10,
+                      paddingVertical: 10,
+                      borderBottomColor: "black",
+                      borderBottomWidth: 1,
+                      width: "201%",
+                      backgroundColor: "black",
+                      borderTopLeftRadius: 4,
+                      borderTopRightRadius: 4,
+                    }}
+                  >
+                    <Text style={{ color: "white", fontWeight: "bold" }}>
+                      {currentWeekStart} - {currentWeekEnd}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      alignItems: "center",
+                      paddingHorizontal: 10,
+                      paddingVertical: 10,
+                    }}
+                  >
+                    <Text>Mon-Fri</Text>
+                  </View>
+                </View>
 
-            <View style={{ flex: 1 }}>
-              <View
-                style={{
-                  alignItems: "center",
-                  paddingHorizontal: 10,
-                  paddingVertical: 10,
-                  borderBottomColor: "black",
-                  borderBottomWidth: 1,
-                }}
-              >
-                <Text> </Text>
-              </View>
-              <View
-                style={{
-                  alignItems: "center",
-                  paddingHorizontal: 10,
-                  paddingVertical: 10,
-                }}
-              >
-                <Text>{totalWeeklyAttendance}/50</Text>
+                <View style={{ flex: 1 }}>
+                  <View
+                    style={{
+                      alignItems: "center",
+                      paddingHorizontal: 10,
+                      paddingVertical: 10,
+                      borderBottomColor: "black",
+                      borderBottomWidth: 1,
+                    }}
+                  >
+                    <Text> </Text>
+                  </View>
+                  <View
+                    style={{
+                      alignItems: "center",
+                      paddingHorizontal: 10,
+                      paddingVertical: 10,
+                    }}
+                  >
+                    <Text>{totalWeeklyAttendance}/50</Text>
+                  </View>
+                </View>
               </View>
             </View>
-          </View>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            paddingVertical: 20,
-            paddingHorizontal: 20,
-            gap: 20,
-            alignItems: "center",
-          }}
-        >
-          <View
-            style={{
-              borderWidth: 2,
-              borderColor: "black",
-              borderRadius: 14,
-              maxHeight: 115,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 20,
-                fontWeight: "bold",
-                paddingHorizontal: 20,
-                paddingVertical: 10,
-                borderBottomColor: "black",
-                borderBottomWidth: 2,
-                textAlign: "center",
-              }}
-            >
-              Daily
-            </Text>
-            <Text
-              style={{
-                fontSize: 26,
-                fontWeight: "bold",
-                paddingHorizontal: 20,
-                paddingVertical: 10,
-                textAlign: "center",
-              }}
-            >
-              {(totalTodayAttendance / 10) * 100}%
-            </Text>
-          </View>
-          <View
-            style={{
-              borderWidth: 1,
-              borderColor: "black",
-              borderRadius: 6,
-              flexDirection: "row",
-              flex: 1,
-              maxHeight: 85,
-            }}
-          >
             <View
               style={{
-                borderRightColor: "black",
-                borderRightWidth: 1,
-                flex: 1,
+                flexDirection: "row",
+                paddingVertical: 20,
+                paddingHorizontal: 20,
+                gap: 20,
+                alignItems: "center",
               }}
             >
               <View
                 style={{
-                  alignItems: "center",
-                  paddingHorizontal: 10,
-                  paddingVertical: 10,
-                  borderBottomColor: "black",
-                  borderBottomWidth: 1,
-                  width: "201%",
-                  backgroundColor: "black",
-                  borderTopLeftRadius: 4,
-                  borderTopRightRadius: 4,
+                  borderWidth: 2,
+                  borderColor: "black",
+                  borderRadius: 14,
+                  maxHeight: 115,
                 }}
               >
-                <Text style={{ color: "white", fontWeight: "bold" }}>
-                  {today}
+                <Text
+                  style={{
+                    fontSize: 20,
+                    fontWeight: "bold",
+                    paddingHorizontal: 20,
+                    paddingVertical: 10,
+                    borderBottomColor: "black",
+                    borderBottomWidth: 2,
+                    textAlign: "center",
+                  }}
+                >
+                  Daily
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 26,
+                    fontWeight: "bold",
+                    paddingHorizontal: 20,
+                    paddingVertical: 10,
+                    textAlign: "center",
+                  }}
+                >
+                  {(totalTodayAttendance / 10) * 100}%
                 </Text>
               </View>
               <View
                 style={{
-                  alignItems: "center",
-                  paddingHorizontal: 10,
-                  paddingVertical: 10,
+                  borderWidth: 1,
+                  borderColor: "black",
+                  borderRadius: 6,
+                  flexDirection: "row",
+                  flex: 1,
+                  maxHeight: 85,
                 }}
               >
-                <Text>Today</Text>
-              </View>
-            </View>
+                <View
+                  style={{
+                    borderRightColor: "black",
+                    borderRightWidth: 1,
+                    flex: 1,
+                  }}
+                >
+                  <View
+                    style={{
+                      alignItems: "center",
+                      paddingHorizontal: 10,
+                      paddingVertical: 10,
+                      borderBottomColor: "black",
+                      borderBottomWidth: 1,
+                      width: "201%",
+                      backgroundColor: "black",
+                      borderTopLeftRadius: 4,
+                      borderTopRightRadius: 4,
+                    }}
+                  >
+                    <Text style={{ color: "white", fontWeight: "bold" }}>
+                      {today}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      alignItems: "center",
+                      paddingHorizontal: 10,
+                      paddingVertical: 10,
+                    }}
+                  >
+                    <Text>Today</Text>
+                  </View>
+                </View>
 
-            <View style={{ flex: 1 }}>
-              <View
-                style={{
-                  alignItems: "center",
-                  paddingHorizontal: 10,
-                  paddingVertical: 10,
-                  borderBottomColor: "black",
-                  borderBottomWidth: 1,
-                }}
-              >
-                <Text> </Text>
-              </View>
-              <View
-                style={{
-                  alignItems: "center",
-                  paddingHorizontal: 10,
-                  paddingVertical: 10,
-                }}
-              >
-                <Text>{totalTodayAttendance}/10</Text>
+                <View style={{ flex: 1 }}>
+                  <View
+                    style={{
+                      alignItems: "center",
+                      paddingHorizontal: 10,
+                      paddingVertical: 10,
+                      borderBottomColor: "black",
+                      borderBottomWidth: 1,
+                    }}
+                  >
+                    <Text> </Text>
+                  </View>
+                  <View
+                    style={{
+                      alignItems: "center",
+                      paddingHorizontal: 10,
+                      paddingVertical: 10,
+                    }}
+                  >
+                    <Text>{totalTodayAttendance}/10</Text>
+                  </View>
+                </View>
               </View>
             </View>
           </View>
         </View>
-      </View>
+      )}
     </ScrollView>
   );
 };

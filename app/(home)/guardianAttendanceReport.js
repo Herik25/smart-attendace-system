@@ -9,7 +9,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import axios from "axios";
 import moment from "moment";
 import SearchResults from "../../components/SearchResults";
@@ -30,6 +30,7 @@ const subjectList = [
 
 const guardianAttendanceReport = () => {
   const router = useRouter();
+  const navigation = useNavigation()
   const [currentDate, setCurrentDate] = useState(moment());
   const [subject, setSubject] = useState("");
   const params = useLocalSearchParams();
@@ -54,6 +55,7 @@ const guardianAttendanceReport = () => {
           "Select Children!",
           "please, select any children before seeing any data!"
         );
+        navigation.navigate("guardianHome")
       }
     }
   }, []);
@@ -132,11 +134,19 @@ const guardianAttendanceReport = () => {
   }, []);
   //   console.log(students);
 
-  const updatedStudents = studentsWithAttendace
-    .filter((item) => item.status && item.subject === subject)
-    .sort((a, b) => a.rollNo - b.rollNo);
+  const updatedStudents = students.map((student) => {
+    const attendanceRecord = attendance.find((record) => {
+      return record.rollNo === student.rollNo && record.subject === subject;
+    });
 
-  // Find the index of the student with the specified roll number
+    return {
+      ...student,
+      status: attendanceRecord ? attendanceRecord.status : "",
+    };
+  });
+    // console.log(students);
+
+  // // Find the index of the student with the specified roll number
   const rollNoIndex = updatedStudents.findIndex(
     (student) => +student.rollNo === rollNo
   );
