@@ -41,7 +41,8 @@ const sortingStudents = () => {
   const [currentDate, setCurrentDate] = useState(moment());
   const [subject, setSubject] = useState("Flag Ceremony");
   const [studentsWithAttendance, setStudentsWithAttendance] = useState([]);
-  const [status, setStatus] = useState(null);
+  console.log(studentsWithAttendance);
+  const [status, setStatus] = useState("all");
   const [filteredStudents, setFilteredStudents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -107,20 +108,20 @@ const sortingStudents = () => {
         const attendanceData = response.data;
 
         // Map through students to add attendance data
-        const studentsWithAttendaceData = students.map((student) => {
-          const attendanceRecord = attendanceData.find((record) => {
-            return record.rollNo === student.rollNo;
-          });
+        // const studentsWithAttendanceData = students.map((student) => {
+        //   const attendanceRecord = attendanceData.find((record) => {
+        //     return record.rollNo === student.rollNo;
+        //   });
 
-          return {
-            ...student,
-            status: attendanceRecord ? attendanceRecord.status : "",
-            subject: attendanceRecord ? attendanceRecord.subject : "",
-          };
-        });
+        //   return {
+        //     ...student,
+        //     status: attendanceRecord ? attendanceRecord.status : "",
+        //     subject: attendanceRecord ? attendanceRecord.subject : "",
+        //   };
+        // });
 
         // Update studentsWithAttendance state
-        setStudentsWithAttendance(studentsWithAttendaceData);
+        setStudentsWithAttendance(attendanceData);
       } catch (error) {
         console.log("error fetching attendance data", error);
       }
@@ -155,12 +156,13 @@ const sortingStudents = () => {
     // Sort students based on roll number and current sorting order
     const sortedStudents = studentsWithAttendance.sort((a, b) => {
       if (newSortOrder === "asc") {
-        return a.rollNo - b.rollNo;
+        return a.rollNo - b.rollNo; // Return the result of the comparison
       } else {
-        return b.rollNo - a.rollNo;
+        return b.rollNo - a.rollNo; // Return the result of the comparison
       }
     });
-    setStudentsWithAttendance(sortedStudents); // Update state with sorted students
+
+    setFilteredStudents(sortedStudents); // Update state with sorted students
   };
 
   const [sortDetail, setSortDetail] = useState("asc");
@@ -195,29 +197,21 @@ const sortingStudents = () => {
     setStudentsWithAttendance(sortedStudents); // Update state with sorted students
   };
 
-  const filterByStatus = (status) => {
-    return studentsWithAttendance.filter(
-      (student) => student.status === status
-    );
-  };
-
   useEffect(() => {
     const filterStudentsByStatus = () => {
       let filteredStudents = [];
-      if (status === "present") {
-        filteredStudents = filterByStatus("present");
-      } else if (status === "absent") {
-        filteredStudents = filterByStatus("absent");
-      } else if (status === "halfday") {
-        filteredStudents = filterByStatus("halfday");
-      } else if (status === "all") {
+      if (status === "all") {
         filteredStudents = studentsWithAttendance;
+      } else {
+        filteredStudents = studentsWithAttendance.filter(
+          (student) => student.status === status
+        );
       }
       setFilteredStudents(filteredStudents);
     };
 
     filterStudentsByStatus();
-  }, [status]);
+  }, [status, studentsWithAttendance]);
 
   // Use filteredStudents instead of studentsWithAttendance for rendering
 
@@ -409,7 +403,13 @@ const sortingStudents = () => {
                       justifyContent: "center",
                     }}
                   >
-                    <Text style={{ color: "black", fontSize: 20, fontWeight: 'bold' }}>
+                    <Text
+                      style={{
+                        color: "black",
+                        fontSize: 20,
+                        fontWeight: "bold",
+                      }}
+                    >
                       {item?.rollNo}
                     </Text>
                   </View>

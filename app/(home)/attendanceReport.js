@@ -100,9 +100,16 @@ const attendanceReport = () => {
   }, []);
   //   console.log(students);
 
-  const updatedStudents = studentsWithAttendace
-    .filter((item) => item.status && item.subject === subject) // filter the students with status and subjects
-    .sort((a, b) => a.rollNo - b.rollNo); // sort the students according to the roll no
+  const updatedStudents = students.map((student) => {
+    const attendanceRecord = attendance.find((record) => {
+      return record.rollNo === student.rollNo && record.subject === subject;
+    });
+
+    return {
+      ...student,
+      status: attendanceRecord ? attendanceRecord.status : "",
+    };
+  });
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -194,9 +201,17 @@ const attendanceReport = () => {
 
         <View style={{ marginHorizontal: 12 }}>
           {updatedStudents.length === 0 ? (
-            <View style={{ alignItems: 'center', justifyContent: 'center', minHeight: '65%'}}>
-              <Text style={{ fontSize: 16, marginVertical: 8 }}>No Data Available!!</Text>
-              <Text style={{ fontSize: 20}}>Select Any Subject</Text>
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: "65%",
+              }}
+            >
+              <Text style={{ fontSize: 16, marginVertical: 8 }}>
+                No Data Available!!
+              </Text>
+              <Text style={{ fontSize: 20 }}>Select Any Subject</Text>
             </View>
           ) : (
             updatedStudents.map((item, index) => (
@@ -228,7 +243,9 @@ const attendanceReport = () => {
                     justifyContent: "center",
                   }}
                 >
-                  <Text style={{ color: "black", fontSize: 20, fontWeight: 'bold' }}>
+                  <Text
+                    style={{ color: "black", fontSize: 20, fontWeight: "bold" }}
+                  >
                     {item?.rollNo}
                   </Text>
                 </View>

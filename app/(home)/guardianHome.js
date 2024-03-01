@@ -23,7 +23,7 @@ const guardianHome = () => {
     if (Object.keys(params).length > 0) {
       if (params.selectedChild !== "") {
         setSelectedChild(params.selectedChild);
-        console.log(selectedChild);
+        // console.log(selectedChild);
       }
     }
   }, [params]);
@@ -352,7 +352,12 @@ const guardianHome = () => {
             }}
           >
             <Pressable
-              onPress={() => router.push("sortingStudents")}
+              onPress={() =>
+                router.push({
+                  pathname: "/fullReport",
+                  params: { selectedChild },
+                })
+              }
               style={{
                 backgroundColor: "white",
                 borderRadius: 6,

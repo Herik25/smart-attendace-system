@@ -140,11 +140,35 @@ app.get("/attendance", async (req, res) => {
   try {
     const { date } = req.query;
 
-    const attendanceData = await Attendance.find({ date: date });
+    const attendanceData = await Attendance.find({ date: date }).lean();
+
+    // Populate attendance data with class information
+    for (let i = 0; i < attendanceData.length; i++) {
+      const student = await Student.findOne({
+        rollNo: attendanceData[i].rollNo,
+      }).lean();
+      if (student) {
+        attendanceData[i].studentClass = student.studentClass;
+      }
+    }
 
     res.status(200).json(attendanceData);
   } catch (error) {
     res.status(500).json({ message: "error fetching attendance" });
+  }
+});
+
+// Endpoint to fetch all attendance data by roll number
+app.get("/attendance/:rollNo", async (req, res) => {
+  try {
+    const rollNo = req.params.rollNo;
+
+    const attendanceData = await Attendance.find({ rollNo });
+
+    res.status(200).json(attendanceData);
+  } catch (error) {
+    console.error("Error fetching attendance data by roll number:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
@@ -263,21 +287,23 @@ app.delete("/attendance", async (req, res) => {
     // Delete all documents from the Attendance collection
     await Attendance.deleteMany({});
 
-    res.status(200).json({ message: "All attendance records deleted successfully" });
+    res
+      .status(200)
+      .json({ message: "All attendance records deleted successfully" });
   } catch (error) {
     console.error("Error deleting attendance records:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
-// fetching attendance for a sungle student for guardians section 
+// fetching attendance for a sungle student for guardians section
 
 app.get("/attendance-report-single-student", async (req, res) => {
   try {
     const { rollNo, name, month, year } = req.query;
 
     console.log("Query parameters:", rollNo, name, month, year);
-    
+
     // Calculate the start and end dates for the selected month and year
     const startDate = moment(`${year}-${month}-01`, "YYYY-MM-DD")
       .startOf("month")
@@ -360,8 +386,10 @@ app.get("/attendance-report-single-student", async (req, res) => {
 
     res.status(200).json({ report });
   } catch (error) {
-    console.error("Error generating attendance report for a single student:", error);
+    console.error(
+      "Error generating attendance report for a single student:",
+      error
+    );
     res.status(500).json({ message: "Error generating the report" });
   }
 });
-
