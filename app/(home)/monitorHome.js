@@ -30,7 +30,9 @@ const monitorHome = () => {
             borderBottomWidth: 1,
           }}
         >
-          <Feather name="bar-chart" size={22} color="black" />
+          <Pressable onPress={() => router.push("editStudentsList")}>
+            <MaterialIcons name="edit-note" size={28} color="black" />
+          </Pressable>
           <Text
             style={{
               fontSize: 16,
@@ -423,9 +425,15 @@ const monitorHome = () => {
                   justifyContent: "center",
                 }}
               >
-                <Ionicons name="remove-circle-outline" size={24} color="white" />
+                <Ionicons
+                  name="remove-circle-outline"
+                  size={24}
+                  color="white"
+                />
               </View>
-              <Text style={{ marginTop: 7, fontWeight: 'bold' }}>Delete Student</Text>
+              <Text style={{ marginTop: 7, fontWeight: "bold" }}>
+                Delete Student
+              </Text>
             </Pressable>
             <Pressable
               onPress={() => router.push("deleteAllAttendance")}
@@ -437,7 +445,7 @@ const monitorHome = () => {
                 justifyContent: "center",
                 flex: 1,
                 borderWidth: 2,
-                borderColor: 'black'
+                borderColor: "black",
               }}
             >
               <View
@@ -452,7 +460,9 @@ const monitorHome = () => {
               >
                 <AntDesign name="delete" size={24} color="white" />
               </View>
-              <Text style={{ marginTop: 7, fontWeight: 'bold' }}>Delete All Attendance</Text>
+              <Text style={{ marginTop: 7, fontWeight: "bold" }}>
+                Delete All Attendance
+              </Text>
             </Pressable>
           </View>
         </View>

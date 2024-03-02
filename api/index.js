@@ -101,6 +101,49 @@ app.get("/students/:rollNo", async (req, res) => {
   }
 });
 
+// Endpoint to update a student by rollNo
+app.put("/students/:rollNo", async (req, res) => {
+  try {
+    const rollNo = req.params.rollNo;
+
+    const {
+      studentName,
+      dateOfBirth,
+      gender,
+      address,
+      phoneNumber,
+      studentClass,
+      guardianName,
+    } = req.body;
+
+    // Find the student by rollNo and update its information
+    const updatedStudent = await Student.findOneAndUpdate(
+      { rollNo },
+      {
+        studentName,
+        dateOfBirth,
+        gender,
+        address,
+        phoneNumber,
+        studentClass,
+        guardianName,
+      },
+      { new: true }
+    );
+
+    if (!updatedStudent) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Student updated successfully", updatedStudent });
+  } catch (error) {
+    console.error("Error updating student:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 // endpoint for attendance
 app.post("/attendance", async (req, res) => {
   try {
