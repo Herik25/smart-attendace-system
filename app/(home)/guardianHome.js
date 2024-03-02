@@ -248,6 +248,7 @@ const guardianHome = () => {
               </View>
             </Pressable>
             <Pressable
+            onPress={() => {router.push("guardianHolidayReport")}}
               style={{
                 backgroundColor: "black",
                 borderRadius: 6,
@@ -279,7 +280,7 @@ const guardianHome = () => {
                   color: "white",
                 }}
               >
-                All Holoday Reports
+                All Holiday Reports
               </Text>
               <View
                 style={{
