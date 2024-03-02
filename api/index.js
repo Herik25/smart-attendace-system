@@ -5,6 +5,7 @@ const moment = require("moment");
 const cors = require("cors");
 const Student = require("./models/student");
 const Attendance = require("./models/attendance");
+const Holiday = require("./models/holiday");
 
 const app = express();
 const port = 8080;
@@ -434,5 +435,69 @@ app.get("/attendance-report-single-student", async (req, res) => {
       error
     );
     res.status(500).json({ message: "Error generating the report" });
+  }
+});
+
+// Endpoint to fetch holiday reports
+app.get("/holiday-reports", async (req, res) => {
+  try {
+    const { month, year } = req.query;
+
+    // Calculate the start and end dates for the selected month and year
+    const startDate = moment(`${year}-${month}-01`, "YYYY-MM-DD")
+      .startOf("month")
+      .toDate();
+    const endDate = moment(startDate).endOf("month").toDate();
+
+    // Aggregate to find holidays within the specified month and year
+    const holidays = await Holiday.aggregate([
+      {
+        $addFields: {
+          holidayDate: { $dateFromString: { dateString: "$date" } }, // Convert date string to Date object
+        },
+      },
+      {
+        $match: {
+          holidayDate: { $gte: startDate, $lte: endDate }, // Filter by date range
+        },
+      },
+    ]);
+
+    res.status(200).json({ holidays });
+  } catch (error) {
+    console.error("Error fetching holiday reports:", error);
+    res.status(500).json({ message: "Error fetching holiday reports" });
+  }
+});
+// Endpoint to add a holiday
+app.post("/holidays", async (req, res) => {
+  try {
+    const { date, name, detail } = req.body;
+
+    // Create a new Holiday document
+    const newHoliday = new Holiday({ date, name, detail });
+    await newHoliday.save();
+
+    res
+      .status(201)
+      .json({ message: "Holiday added successfully", holiday: newHoliday });
+  } catch (error) {
+    console.error("Error adding holiday:", error);
+    res.status(500).json({ message: "Failed to add holiday" });
+  }
+});
+
+// delete holiday
+app.delete("/holidays", async (req, res) => {
+  try {
+    // Delete all documents from the Attendance collection
+    await Holiday.deleteMany({});
+
+    res
+      .status(200)
+      .json({ message: "All attendance records deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting attendance records:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });

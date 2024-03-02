@@ -227,6 +227,7 @@ const monitorHome = () => {
               </View>
             </Pressable>
             <Pressable
+            onPress={() => router.push("holidayReports")}
               style={{
                 backgroundColor: "black",
                 borderRadius: 6,

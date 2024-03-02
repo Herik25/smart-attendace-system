@@ -22,13 +22,14 @@ const fullReport = () => {
   const [currentWeekStart, setCurrentWeekStart] = useState("");
   const [currentWeekEnd, setCurrentWeekEnd] = useState("");
   const [today, setToday] = useState("");
-  const totalSubjects = 200;
+  let totalSubjects = 200;
   const params = useLocalSearchParams();
   const navigation = useNavigation();
   const [selectedChild, setSelectedChild] = useState("");
   const [rollNo, setRollNo] = useState(0);
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [totalHolidays, setTotalHolidays] = useState(0);
 
   const data = [
     {
@@ -54,7 +55,7 @@ const fullReport = () => {
     },
     {
       name: "Holiday",
-      attendance: parseInt(attendanceData[0]?.holiday) || 0,
+      attendance: parseInt(attendanceData[0]?.holiday + totalHolidays) || totalHolidays,
       color: "#FF8F00",
       legendFontColor: "#7F7F7F",
       legendFontSize: 15,
@@ -133,14 +134,30 @@ const fullReport = () => {
     }
   };
 
+  const fetchTotalHolidays = async () => {
+    try {
+      const response = await axios.get(
+        `http://192.168.0.102:8080/holiday-reports?month=${currentDate.format(
+          "M"
+        )}&year=${currentDate.format("YYYY")}`
+      );
+      const holidays = response.data.holidays.length;
+      setTotalHolidays(holidays);
+    } catch (error) {
+      console.log("Error fetching total holidays: ", error);
+    }
+  };
+
   useEffect(() => {
     fetchAttendanceReport();
     fetchAllAttendance();
+    fetchTotalHolidays();
   }, [currentDate, name, rollNo]);
   // console.log("all:",allAttendance);
 
   const calculatePercentage = (present, totalSubjects) => {
-    return (present / totalSubjects) * 100;
+    const percentage = (present / totalSubjects) * 100;
+    return percentage.toFixed(2);
   };
 
   const calculateWeeklyAttendance = () => {
@@ -209,7 +226,7 @@ const fullReport = () => {
             justifyContent: "center",
             alignItems: "center",
             backgroundColor: "#fff",
-            marginTop: 120
+            marginTop: 120,
           }}
         >
           <ActivityIndicator size="large" color="black" />
@@ -304,7 +321,7 @@ const fullReport = () => {
                     {/* 0.5% */}
                     {calculatePercentage(
                       attendanceData[0]?.present,
-                      totalSubjects
+                      totalSubjects - totalHolidays
                     )}
                     %
                   </Text>

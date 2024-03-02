@@ -25,6 +25,7 @@ const DeleteAllAttendance = () => {
               try {
                 // Perform deletion
                 await axios.delete("http://192.168.0.102:8080/attendance");
+                await axios.delete("http://192.168.0.102:8080/holidays");
                 Alert.alert(
                   "Success",
                   "All attendance records deleted successfully."

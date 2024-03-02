@@ -214,19 +214,6 @@ const adddetails = () => {
           <Text style={{ fontSize: 17, fontWeight: "bold", marginBottom: 10 }}>
             Date of Birth
           </Text>
-          {/* <TextInput
-            value={dob}
-            onChangeText={(text) => setDob(text)}
-            style={{
-              padding: 10,
-              borderColor: "#D0D0D0",
-              borderWidth: 1,
-              marginTop: 10,
-              borderRadius: 5,
-            }}
-            placeholder="Enter Date of Birth"
-            placeholderTextColor={"black"}
-          /> */}
           <DatePickerInput
             style={{
               backgroundColor: "white",

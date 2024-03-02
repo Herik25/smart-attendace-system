@@ -14,14 +14,15 @@ import { DataTable } from "react-native-paper";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 
 const guardianSummary = () => {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   const [attendanceData, setAttendanceData] = useState([]);
   const [currentDate, setCurrentDate] = useState(moment());
-  const totalSubjects = 200;
+  let totalSubjects = 200;
   const params = useLocalSearchParams();
   const [selectedChild, setSelectedChild] = useState("");
   const [rollNo, setRollNo] = useState(0);
   const [name, setName] = useState("");
+  const [totalHolidays, setTotalHolidays] = useState(0);
 
   useEffect(() => {
     if (Object.keys(params).length > 0) {
@@ -42,7 +43,7 @@ const guardianSummary = () => {
           "Select Children!",
           "please, select any children before seeing any data!"
         );
-        navigation.navigate("guardianHome")
+        navigation.navigate("guardianHome");
       }
     }
   }, []);
@@ -84,13 +85,31 @@ const guardianSummary = () => {
     }
   };
 
+  const fetchTotalHolidays = async () => {
+    try {
+      const response = await axios.get(
+        `http://192.168.0.102:8080/holiday-reports?month=${currentDate.format(
+          "M"
+        )}&year=${currentDate.format("YYYY")}`
+      );
+      const holidays = response.data.holidays.length;
+      setTotalHolidays(holidays);
+    } catch (error) {
+      console.log("Error fetching total holidays: ", error);
+    }
+  };
+
   useEffect(() => {
     fetchAttendanceReport();
+    fetchTotalHolidays();
   }, [currentDate, name, rollNo]);
   //   console.log(attendanceData);
 
+  totalSubjects -= totalHolidays;
+
   const calculatePercentage = (present, totalSubjects) => {
-    return (present / totalSubjects) * 100;
+    const percentage = (present / totalSubjects) * 100;
+    return percentage.toFixed(0);
   };
 
   return (
@@ -415,21 +434,99 @@ const guardianSummary = () => {
           width: "100%",
         }}
       >
-        <Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 10, marginBottom: 5 }}>
-          Total Attendance : {totalSubjects}
+        <Text
+          style={{
+            fontSize: 16,
+            fontWeight: "bold",
+            marginTop: 10,
+            marginBottom: 5,
+          }}
+        >
+          Total Attendance : {totalSubjects}{" "}
+          <Text style={{ color: "#aaa" }}>(200 - holidays)</Text>
         </Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '80%', marginVertical: 10 }}>
-          <View style={{ justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#000', padding: 8, paddingHorizontal: 14, borderRadius: 12 }}>
-            <Text style={{ fontWeight: 'bold', fontSize: 14, color: '#000' }}>Per Day</Text>
-            <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#000', marginTop: 4 }}>10</Text>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: "80%",
+            marginVertical: 10,
+          }}
+        >
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              borderWidth: 1,
+              borderColor: "#000",
+              padding: 8,
+              paddingHorizontal: 14,
+              borderRadius: 12,
+            }}
+          >
+            <Text style={{ fontWeight: "bold", fontSize: 14, color: "#000" }}>
+              Per Day
+            </Text>
+            <Text
+              style={{
+                fontSize: 14,
+                fontWeight: "bold",
+                color: "#000",
+                marginTop: 4,
+              }}
+            >
+              10
+            </Text>
           </View>
-          <View style={{ justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#000', padding: 8, paddingHorizontal: 10, borderRadius: 12 }}>
-            <Text style={{ fontWeight: 'bold', fontSize: 14, color: '#000' }}>Per Week</Text>
-            <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#000', marginTop: 4 }}>50</Text>
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              borderWidth: 1,
+              borderColor: "#000",
+              padding: 8,
+              paddingHorizontal: 10,
+              borderRadius: 12,
+            }}
+          >
+            <Text style={{ fontWeight: "bold", fontSize: 14, color: "#000" }}>
+              Per Week
+            </Text>
+            <Text
+              style={{
+                fontSize: 14,
+                fontWeight: "bold",
+                color: "#000",
+                marginTop: 4,
+              }}
+            >
+              50
+            </Text>
           </View>
-          <View style={{ justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#000', padding: 8, borderRadius: 12 }}>
-            <Text style={{ fontWeight: 'bold', fontSize: 14, color: '#000' }}>Per Month</Text>
-            <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#000', marginTop: 4 }}>200</Text>
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              borderWidth: 1,
+              borderColor: "#000",
+              padding: 8,
+              borderRadius: 12,
+            }}
+          >
+            <Text style={{ fontWeight: "bold", fontSize: 14, color: "#000" }}>
+              Per Month
+            </Text>
+            <Text
+              style={{
+                fontSize: 14,
+                fontWeight: "bold",
+                color: "#000",
+                marginTop: 4,
+              }}
+            >
+              200
+            </Text>
           </View>
         </View>
       </View>

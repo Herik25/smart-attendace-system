@@ -8,7 +8,8 @@ import { DataTable } from "react-native-paper";
 const summaryReport = () => {
   const [attendanceData, setAttendanceData] = useState([]);
   const [currentDate, setCurrentDate] = useState(moment());
-  const totalSubjects = 200;
+  const [totalHolidays, setTotalHolidays] = useState(0);
+  let totalSubjects = 200;
 
   const goToNextMont = () => {
     const nextMonth = moment(currentDate).add(1, "months");
@@ -43,13 +44,29 @@ const summaryReport = () => {
     }
   };
 
+  const fetchTotalHolidays = async () => {
+    try {
+      const response = await axios.get(
+        `http://192.168.0.102:8080/holiday-reports?month=${currentDate.format(
+          "M"
+        )}&year=${currentDate.format("YYYY")}`
+      );
+      const holidays = response.data.holidays.length;
+      setTotalHolidays(holidays);
+    } catch (error) {
+      console.log("Error fetching total holidays: ", error);
+    }
+  };
+
   useEffect(() => {
     fetchAttendanceReport();
+    fetchTotalHolidays();
   }, [currentDate]);
   //   console.log(attendanceData);
 
   const calculatePercentage = (present, totalSubjects) => {
-    return (present / totalSubjects) * 100;
+    const percentage = (present / totalSubjects) * 100;
+    return percentage.toFixed(0);
   };
 
   return (
@@ -81,7 +98,7 @@ const summaryReport = () => {
 
       <View style={{ marginHorizontal: 12 }}>
         {attendanceData.map((item, index) => {
-          const percentage = calculatePercentage(item.present, totalSubjects);
+          const percentage = calculatePercentage(item.present, totalSubjects - totalHolidays);
           return (
             <View
               key={index}
