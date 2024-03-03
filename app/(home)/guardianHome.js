@@ -10,7 +10,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { SplashScreen, useLocalSearchParams, useRouter } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 
 const guardianHome = () => {
@@ -18,12 +18,14 @@ const guardianHome = () => {
   const params = useLocalSearchParams();
 
   const [selectedChild, setSelectedChild] = useState("");
+  const [guardianEmail, setGuardianEmail] = useState("");
 
   useEffect(() => {
     if (Object.keys(params).length > 0) {
       if (params.selectedChild !== "") {
-        setSelectedChild(params.selectedChild);
-        // console.log(selectedChild);
+        setSelectedChild(params?.selectedChild);
+        setGuardianEmail(params?.email);
+        // console.log(guardianEmail);
       }
     }
   }, [params]);
@@ -248,7 +250,9 @@ const guardianHome = () => {
               </View>
             </Pressable>
             <Pressable
-            onPress={() => {router.push("guardianHolidayReport")}}
+              onPress={() => {
+                router.push("guardianHolidayReport");
+              }}
               style={{
                 backgroundColor: "black",
                 borderRadius: 6,
@@ -296,7 +300,12 @@ const guardianHome = () => {
               </View>
             </Pressable>
             <Pressable
-              onPress={() => router.push("addStudent")}
+              onPress={() =>
+                router.push({
+                  pathname: "/editGuardian",
+                  params: { guardianEmail },
+                })
+              }
               style={{
                 backgroundColor: "#000",
                 borderRadius: 6,
@@ -414,7 +423,7 @@ const guardianHome = () => {
                   justifyContent: "center",
                 }}
               >
-               <Entypo name="info-with-circle" size={20} color="white" />
+                <Entypo name="info-with-circle" size={20} color="white" />
               </View>
               <Text style={{ marginTop: 7, fontWeight: "bold" }}>
                 Student Info

@@ -6,6 +6,7 @@ const cors = require("cors");
 const Student = require("./models/student");
 const Attendance = require("./models/attendance");
 const Holiday = require("./models/holiday");
+const Guardian = require("./models/guardian");
 
 const app = express();
 const port = 8080;
@@ -499,5 +500,90 @@ app.delete("/holidays", async (req, res) => {
   } catch (error) {
     console.error("Error deleting attendance records:", error);
     res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// Endpoint to check user registration by email
+app.get("/check-registration/:email", async (req, res) => {
+  try {
+    const email = req.params.email;
+
+    // Assuming you have a User model where user registration data is stored
+    const user = await Guardian.findOne({ email });
+
+    if (user) {
+      res.status(200).json({ isRegistered: true });
+    } else {
+      res.status(200).json({ isRegistered: false });
+    }
+  } catch (error) {
+    console.error("Error checking user registration:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// Endpoint to add a guardian
+app.post("/addGuardian", async (req, res) => {
+  try {
+    const { email, password, fullName, phoneNumber, address } = req.body;
+
+    const newGuardian = new Guardian({
+      email,
+      password,
+      fullName,
+      phoneNumber,
+      address,
+    });
+
+    await newGuardian.save();
+
+    res
+      .status(201)
+      .json({ message: "Guardian added successfully", newGuardian });
+  } catch (error) {
+    console.error("Error adding guardian:", error);
+    res.status(500).json({ message: "Failed to add guardian" });
+  }
+});
+
+// GET guardian by email route
+app.get("/guardians/:email", async (req, res) => {
+  const { email } = req.params;
+  
+  try {
+    // Find guardian by email
+    const guardian = await Guardian.findOne({ email: email });
+
+    if (!guardian) {
+      return res.status(404).json({ error: "Guardian not found" });
+    }
+
+    return res.json(guardian);
+  } catch (error) {
+    console.error("Error fetching guardian:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Update guardian route
+app.put("/guardians/:email", async (req, res) => {
+  const { email } = req.params;
+  
+  try {
+    // Find guardian by email and update its information
+    const updatedGuardian = await Guardian.findOneAndUpdate(
+      { email: email },
+      req.body,
+      { new: true }
+    );
+
+    if (!updatedGuardian) {
+      return res.status(404).json({ error: "Guardian not found" });
+    }
+
+    return res.json(updatedGuardian);
+  } catch (error) {
+    console.error("Error updating guardian:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 });
