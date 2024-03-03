@@ -34,6 +34,7 @@ const guardianAttendanceReport = () => {
   const [currentDate, setCurrentDate] = useState(moment());
   const [subject, setSubject] = useState("");
   const params = useLocalSearchParams();
+  console.log(params);
   const [selectedChild, setSelectedChild] = useState("");
   const [rollNo, setRollNo] = useState(0);
 

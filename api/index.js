@@ -43,10 +43,8 @@ app.post("/addStudent", async (req, res) => {
       address,
       phoneNumber,
       studentClass,
-      guardianName,
+      guardianEmail,
     } = req.body;
-
-    console.log(rollNo);
 
     // create a new student
     const newStudent = new Student({
@@ -57,12 +55,13 @@ app.post("/addStudent", async (req, res) => {
       address,
       phoneNumber,
       studentClass,
-      guardianName,
+      guardianEmail,
     });
     try {
       await newStudent.save();
     } catch (error) {
-      console.log("hehe error: ", error);
+      return res.status(400).json({message: "fields are required!"})
+      // console.log("error: ", error);
     }
 
     res
@@ -115,7 +114,7 @@ app.put("/students/:rollNo", async (req, res) => {
       address,
       phoneNumber,
       studentClass,
-      guardianName,
+      guardianEmail,
     } = req.body;
 
     // Find the student by rollNo and update its information
@@ -128,7 +127,7 @@ app.put("/students/:rollNo", async (req, res) => {
         address,
         phoneNumber,
         studentClass,
-        guardianName,
+        guardianEmail,
       },
       { new: true }
     );

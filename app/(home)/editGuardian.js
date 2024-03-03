@@ -21,8 +21,7 @@ const editGuardian = () => {
   const [guardianName, setGuardianName] = useState("");
   const [address, setAddress] = useState("");
   const [mobileNo, setMobileNo] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [submitLoading, setSubmitLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (Object.keys(params).length > 0) {
@@ -35,6 +34,7 @@ const editGuardian = () => {
   useEffect(() => {
     // Fetch guardian data based on the email
     if (guardianEmail !== "") {
+      setIsLoading(true);
       axios
         .get(`http://192.168.0.102:8080/guardians/${guardianEmail}`)
         .then((response) => {
@@ -42,16 +42,16 @@ const editGuardian = () => {
           setGuardianName(guardianData.fullName);
           setAddress(guardianData.address);
           setMobileNo(guardianData.phoneNumber);
+          setIsLoading(false);
         })
         .catch((error) => {
+          setIsLoading(false);
           console.log("Error fetching guardian:", error);
         });
-      setIsLoading(false);
     }
   }, [guardianEmail]);
 
   const handleEdit = () => {
-    setSubmitLoading(true)
     const updatedGuardian = {
       guardianName: guardianName,
       address: address,
@@ -71,7 +71,6 @@ const editGuardian = () => {
         console.log("Error updating guardian:", error);
         Alert.alert("Error", "Failed to update guardian.");
       });
-      setSubmitLoading(false)
   };
 
   return (
@@ -91,9 +90,11 @@ const editGuardian = () => {
       {isLoading ? (
         <View
           style={{
-            marginTop: 120,
-            alignItems: "center",
+            flex: 1,
             justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#fff",
+            marginTop: 120,
           }}
         >
           <ActivityIndicator size="large" color="black" />
@@ -139,7 +140,7 @@ const editGuardian = () => {
 
           <Pressable onPress={handleEdit} style={styles.button}>
             <Text style={{ fontWeight: "bold", color: "white", fontSize: 16 }}>
-              { submitLoading ? "Update Guardian" : <ActivityIndicator size="large" color="white" />}
+              Update Guardian
             </Text>
           </Pressable>
         </View>

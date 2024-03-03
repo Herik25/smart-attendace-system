@@ -55,7 +55,8 @@ const fullReport = () => {
     },
     {
       name: "Holiday",
-      attendance: parseInt(attendanceData[0]?.holiday + totalHolidays) || totalHolidays,
+      attendance:
+        parseInt(attendanceData[0]?.holiday + totalHolidays) || totalHolidays,
       color: "#FF8F00",
       legendFontColor: "#7F7F7F",
       legendFontSize: 15,

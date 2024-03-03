@@ -11,13 +11,15 @@ import axios from "axios";
 import { useNavigation } from "expo-router";
 
 const AddGuardian = () => {
-  const navigate = useNavigation()
+  const navigate = useNavigation();
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [address, setAddress] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleAddGuardian = () => {
+    setIsLoading(true);
     const guardianData = {
       email,
       fullName,
@@ -28,6 +30,7 @@ const AddGuardian = () => {
     axios
       .post("http://192.168.0.102:8080/addGuardian", guardianData)
       .then((response) => {
+        setIsLoading(false);
         Alert.alert(
           "Guardian Added Successfully",
           "The guardian has been added successfully!"
@@ -36,9 +39,10 @@ const AddGuardian = () => {
         setFullName("");
         setPhoneNumber("");
         setAddress("");
-        navigate.navigate("guardianHome")
+        navigate.navigate("guardianHome");
       })
       .catch((error) => {
+        setIsLoading(false);
         Alert.alert(
           "Failed to Add Guardian",
           "An error occurred while adding the guardian."
@@ -75,7 +79,13 @@ const AddGuardian = () => {
         placeholder="Address"
       />
       <Pressable style={styles.button} onPress={handleAddGuardian}>
-        <Text style={styles.buttonText}>Add Guardian</Text>
+        <Text style={styles.buttonText}>
+          {isLoading ? (
+            <ActivityIndicator size="small" color="white" />
+          ) : (
+            "Add Guardian"
+          )}
+        </Text>
       </Pressable>
     </View>
   );

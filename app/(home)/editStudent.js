@@ -41,7 +41,7 @@ const editStudent = () => {
   const [address, setAddress] = useState("");
   const [mobileNo, setMobileNo] = useState("");
   const [studentClass, setStudentClass] = useState("");
-  const [guardianName, setGuardianName] = useState("");
+  const [guardianEmail, setguardianEmail] = useState("");
 
   useEffect(() => {
     if (Object.keys(params).length > 0) {
@@ -79,7 +79,7 @@ const editStudent = () => {
           setAddress(studentData.address);
           setMobileNo(studentData.phoneNumber);
           setStudentClass(studentData.studentClass);
-          setGuardianName(studentData.guardianName);
+          setguardianEmail(studentData.guardianEmail);
         })
         .catch((error) => {
           console.log("Error fetching student:", error);
@@ -100,7 +100,7 @@ const editStudent = () => {
       address,
       phoneNumber: mobileNo,
       studentClass,
-      guardianName,
+      guardianEmail,
     };
 
     axios
@@ -279,11 +279,11 @@ const editStudent = () => {
         </View>
         <View style={{ marginBottom: 10 }}>
           <Text style={{ fontSize: 17, fontWeight: "bold" }}>
-            Guardian Name
+            Guardian Email
           </Text>
           <TextInput
-            value={guardianName}
-            onChangeText={(text) => setGuardianName(text)}
+            value={guardianEmail}
+            onChangeText={(text) => setguardianEmail(text)}
             style={{
               padding: 10,
               borderColor: "#D0D0D0",
@@ -291,7 +291,7 @@ const editStudent = () => {
               marginTop: 10,
               borderRadius: 5,
             }}
-            placeholder="Guardian Name"
+            placeholder="Guardian Email"
             placeholderTextColor={"black"}
           />
         </View>

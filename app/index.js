@@ -5,7 +5,7 @@ import { en, registerTranslation } from "react-native-paper-dates";
 registerTranslation("en", en);
 
 const index = () => {
-  return <Redirect href="/(home)/guardianHome" />;
+  return <Redirect href="/(home)/" />;
 };
 
 export default index;

@@ -6,6 +6,7 @@ import {
   TextInput,
   Pressable,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
 import axios from "axios";
@@ -15,19 +16,19 @@ import { DatePickerInput } from "react-native-paper-dates";
 import DropdownComponent from "../../components/DropdownComponent";
 
 const classData = [
-    { label: '1st', value: '1st' },
-    { label: '2nd', value: '2nd' },
-    { label: '3rd', value: '3rd' },
-    { label: '4th', value: '4th' },
-    { label: 'sth', value: '5th' },
-    { label: '6th', value: '6th' },
-    { label: '7th', value: '7th' },
-    { label: '8th', value: '8th' },
-    { label: '9th', value: '9th' },
-    { label: '10th', value: '10th' },
-    { label: '11th', value: '11th' },
-    { label: '12th', value: '12th' },
-  ];
+  { label: "1st", value: "1st" },
+  { label: "2nd", value: "2nd" },
+  { label: "3rd", value: "3rd" },
+  { label: "4th", value: "4th" },
+  { label: "sth", value: "5th" },
+  { label: "6th", value: "6th" },
+  { label: "7th", value: "7th" },
+  { label: "8th", value: "8th" },
+  { label: "9th", value: "9th" },
+  { label: "10th", value: "10th" },
+  { label: "11th", value: "11th" },
+  { label: "12th", value: "12th" },
+];
 
 const adddetails = () => {
   const [rollNo, setRollNo] = useState("");
@@ -37,24 +38,25 @@ const adddetails = () => {
   const [address, setAddress] = useState("");
   const [mobileNo, setMobileNo] = useState("");
   const [studentClass, setStudentClass] = useState("");
-  const [guardianName, setGuardianName] = useState("");
-  
-  let updatedDob = '';
+  const [guardianEmail, setguardianEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  let updatedDob = "";
   if (dob) {
     updatedDob = moment(dob.date).format("YYYY-MM-DD");
   }
 
   const handleRegister = () => {
+    setIsLoading(true);
     const studentData = {
       rollNo: rollNo,
       studentName: name,
       dateOfBirth: updatedDob,
       gender: gender,
       address,
-      address,
       phoneNumber: mobileNo,
       studentClass: studentClass,
-      guardianName: guardianName,
+      guardianEmail: guardianEmail.toLowerCase(),
     };
     // console.log(studentData);
     // my device's wife ip address: 192.168.0.102:8080
@@ -62,6 +64,7 @@ const adddetails = () => {
     axios
       .post("http://192.168.0.102:8080/addStudent", studentData)
       .then((response) => {
+        setIsLoading(false);
         Alert.alert(
           "Registration Successful",
           "You have been registered successfully"
@@ -73,10 +76,11 @@ const adddetails = () => {
         setMobileNo("");
         setAddress("");
         setStudentClass("");
-        setGuardianName("");
-        updatedDob = '';
+        setguardianEmail("");
+        updatedDob = "";
       })
       .catch((error) => {
+        setIsLoading(false);
         Alert.alert(
           "Registration Fail",
           "An error occurred during registration"
@@ -87,20 +91,19 @@ const adddetails = () => {
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: "white" }}>
-        <View
-          style={{
-            borderBottomColor: "black",
-            borderBottomWidth: 1,
-            paddingBottom: 10,
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ fontSize: 17, fontWeight: "bold" }}>
-            Add a New Student
-          </Text>
-        </View>
+      <View
+        style={{
+          borderBottomColor: "black",
+          borderBottomWidth: 1,
+          paddingBottom: 10,
+          alignItems: "center",
+        }}
+      >
+        <Text style={{ fontSize: 17, fontWeight: "bold" }}>
+          Add a New Student
+        </Text>
+      </View>
       <View style={{ padding: 10 }}>
-
         <View style={{ marginVertical: 10 }}>
           <Text style={{ fontSize: 17, fontWeight: "bold" }}>
             Full Name (First and last Name)
@@ -235,18 +238,30 @@ const adddetails = () => {
         </View>
 
         <View>
-          <Text style={{ fontSize: 17, fontWeight: "bold", transform: [{ translateY: 10 }] }}>
+          <Text
+            style={{
+              fontSize: 17,
+              fontWeight: "bold",
+              transform: [{ translateY: 10 }],
+            }}
+          >
             Student Class
           </Text>
-          <DropdownComponent placeholder="Select Class" data={classData} isSubject={true} state={studentClass} setState={setStudentClass} />
+          <DropdownComponent
+            placeholder="Select Class"
+            data={classData}
+            isSubject={true}
+            state={studentClass}
+            setState={setStudentClass}
+          />
         </View>
         <View style={{ marginBottom: 10 }}>
           <Text style={{ fontSize: 17, fontWeight: "bold" }}>
-            Guardian Name
+            Guardian Email
           </Text>
           <TextInput
-            value={guardianName}
-            onChangeText={(text) => setGuardianName(text)}
+            value={guardianEmail}
+            onChangeText={(text) => setguardianEmail(text)}
             style={{
               padding: 10,
               borderColor: "#D0D0D0",
@@ -254,7 +269,7 @@ const adddetails = () => {
               marginTop: 10,
               borderRadius: 5,
             }}
-            placeholder="Guardian Name"
+            placeholder="Guardian Email"
             placeholderTextColor={"black"}
           />
         </View>
@@ -287,8 +302,12 @@ const adddetails = () => {
             borderRadius: 5,
           }}
         >
-          <Text style={{ fontWeight: "bold", color: "white",fontSize: 16 }}>
-            Add Student
+          <Text style={{ fontWeight: "bold", color: "white", fontSize: 16 }}>
+            {isLoading ? (
+              <ActivityIndicator size="small" color="white" />
+            ) : (
+              "Add Student"
+            )}
           </Text>
         </Pressable>
       </View>

@@ -41,7 +41,6 @@ const sortingStudents = () => {
   const [currentDate, setCurrentDate] = useState(moment());
   const [subject, setSubject] = useState("Flag Ceremony");
   const [studentsWithAttendance, setStudentsWithAttendance] = useState([]);
-  console.log(studentsWithAttendance);
   const [status, setStatus] = useState("all");
   const [filteredStudents, setFilteredStudents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);

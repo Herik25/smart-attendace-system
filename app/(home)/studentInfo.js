@@ -248,7 +248,7 @@ const studentInfo = () => {
                     borderBottomWidth: 1,
                   }}
                 >
-                  <Text>Guardian Name</Text>
+                  <Text>Guardian Email</Text>
                 </View>
                 <View
                   style={{
@@ -376,7 +376,7 @@ const studentInfo = () => {
                     borderBottomWidth: 1,
                   }}
                 >
-                  <Text>{student.guardianName}</Text>
+                  <Text>{student.guardianEmail}</Text>
                 </View>
                 <View
                   style={{

@@ -22,11 +22,11 @@ const guardianHome = () => {
 
   useEffect(() => {
     if (Object.keys(params).length > 0) {
-      if (params.selectedChild !== "") {
+      if (params.selectedChild !== undefined) {
         setSelectedChild(params?.selectedChild);
-        setGuardianEmail(params?.email);
-        // console.log(guardianEmail);
       }
+      setGuardianEmail(params?.email);
+      // console.log(guardianEmail);
     }
   }, [params]);
 
@@ -99,7 +99,12 @@ const guardianHome = () => {
               </Text>
             </Pressable>
             <Pressable
-              onPress={() => router.push("selectChildren")}
+              onPress={() =>
+                router.push({
+                  pathname: "/selectChildren",
+                  params: { guardianEmail },
+                })
+              }
               style={{
                 // backgroundColor: "#CCCDE3",
                 backgroundColor: "#fff",
@@ -146,7 +151,7 @@ const guardianHome = () => {
               onPress={() =>
                 router.push({
                   pathname: "/guardianAttendanceReport",
-                  params: { selectedChild },
+                  params: { selectedChild: selectedChild },
                 })
               }
               style={{

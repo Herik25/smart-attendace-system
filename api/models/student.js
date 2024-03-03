@@ -30,7 +30,7 @@ const studentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  guardianName: {
+  guardianEmail: {
     type: String,
     required: true,
   }
