@@ -49,7 +49,7 @@ const AddGuardian = () => {
   const handleAddGuardian = () => {
     setIsLoading(true);
     const guardianData = {
-      email,
+      email: email.toLocaleLowerCase(),
       fullName,
       phoneNumber,
       address,
