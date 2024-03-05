@@ -8,7 +8,12 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import moment from "moment";
-import { useLocalSearchParams, useLocation, useNavigation, useRouter } from "expo-router";
+import {
+  useLocalSearchParams,
+  useLocation,
+  useNavigation,
+  useRouter,
+} from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
@@ -29,26 +34,74 @@ const subjectList = [
 ];
 
 const TimeList = [
-  { label: '6:40AM - 7:40AM', value: '6:40AM - 7:40AM' },
-  { label: '7:40AM - 8:40AM', value: '7:40AM - 8:40AM' },
-  { label: '8:40AM - 9:40AM', value: '8:40AM - 9:40AM' },
-  { label: '10:00AM - 11:00AM', value: '10:00AM - 11:00AM' },
-  { label: '11:00AM - 12:00PM', value: '11:00AM - 12:00PM' },
-  { label: '1:00PM - 2:00PM', value: '1:00PM - 2:00PM' },
-  { label: '2:00PM - 3:00PM', value: '2:00PM - 3:00PM' },
-  { label: '3:00PM - 4:00PM', value: '3:00PM - 4:00PM' },
-  { label: '4:00PM - 5:00PM', value: '4:00PM - 5:00PM' }
-]
+  { label: "6:40AM - 7:40AM", value: "6:40AM - 7:40AM" },
+  { label: "7:40AM - 8:40AM", value: "7:40AM - 8:40AM" },
+  { label: "8:40AM - 9:40AM", value: "8:40AM - 9:40AM" },
+  { label: "10:00AM - 11:00AM", value: "10:00AM - 11:00AM" },
+  { label: "11:00AM - 12:00PM", value: "11:00AM - 12:00PM" },
+  { label: "1:00PM - 2:00PM", value: "1:00PM - 2:00PM" },
+  { label: "2:00PM - 3:00PM", value: "2:00PM - 3:00PM" },
+  { label: "3:00PM - 4:00PM", value: "3:00PM - 4:00PM" },
+  { label: "4:00PM - 5:00PM", value: "4:00PM - 5:00PM" },
+];
 
 const User = () => {
   const [currentDate, setCurrentDate] = useState(moment());
   const [attendanceStatus, setAttendanceStatus] = useState("present");
-  const [subject, setSubject] = useState("")
-  const [time, setTime] = useState("")
-  const [isSubject, setIsSubject] = useState(false)
+  const [subject, setSubject] = useState("");
+  const [time, setTime] = useState("");
+  const [isSubject, setIsSubject] = useState(false);
 
   const params = useLocalSearchParams();
-  const navigation = useNavigation()
+  const navigation = useNavigation();
+
+  const [student, setStudent] = useState(null); // State to store the fetched student
+  const [guardian, setGuardian] = useState(null);
+  let deviceToken = "";
+
+  useEffect(() => {
+    fetchStudent();
+  }, []);
+
+  useEffect(() => {
+    if (student) {
+      fetchGuardian(student[0].guardianEmail);
+    }
+  }, [student]);
+
+  useEffect(() => {
+    if (guardian) {
+      // console.log("guardian:",guardian);
+      deviceToken = guardian.deviceToken;
+    }
+  }, [guardian]);
+
+  const fetchStudent = async () => {
+    try {
+      // Fetch student based on roll number (id)
+      const response = await axios.get(
+        `http://192.168.0.102:8080/students?rollNo=${id}`
+      );
+      if (response.status === 200) {
+        setStudent(response.data);
+      }
+    } catch (error) {
+      console.log("Error fetching student:", error);
+    }
+  };
+
+  const fetchGuardian = async (email) => {
+    try {
+      const response = await axios.get(
+        `http://192.168.0.102:8080/guardians/${email}`
+      );
+      if (response.status === 200) {
+        setGuardian(response.data);
+      }
+    } catch (error) {
+      console.log("Error fetching guardian:", error);
+    }
+  };
 
   const goToNextDay = () => {
     const nextDay = moment(currentDate).add(1, "days");
@@ -64,7 +117,7 @@ const User = () => {
     return date.format("MMMM D, YYYY");
   };
 
-  // formar of QR CODE encoding : 1&harsh parmar
+  // formar of QR CODE encoding : 1&Harsh parmar
   const data = params.data.split("&");
   const id = data[0];
   const name = data[1];
@@ -75,7 +128,7 @@ const User = () => {
     date: currentDate.format("MMMM D, YYYY"),
     status: attendanceStatus,
     subject: subject,
-    time: time
+    time: time,
   };
 
   const submitAttendance = async () => {
@@ -92,12 +145,33 @@ const User = () => {
           "Attendance Submited!",
           `Attendance Submitted Successfully for ${name}`
         );
-
-        navigation.navigate("monitorHome")
+        sendPushNotification(guardian.deviceToken);
+        navigation.navigate("monitorHome");
       }
     } catch (error) {
       console.log("error submitting attendance : ", error);
     }
+  };
+
+  const sendPushNotification = async (token) => {
+    // notification message
+    const message = {
+      to: token,
+      sound: "default",
+      title: "Attendance Marked!",
+      body: `${student[0].studentName} is marked ${attendanceData.status} for ${subject}`,
+    };
+
+    await fetch("https://exp.host/--/api/v2/push/send", {
+      method: "POST",
+      headers: {
+        host: "exp.host",
+        accept: "application/json",
+        "accept-encoding": "gzip, deflate",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(message),
+    });
   };
 
   return (
@@ -259,11 +333,23 @@ const User = () => {
           </Pressable>
         </View>
         <View style={{ flexDirection: "column", alignItems: "center" }}>
-          <View style={{ width: '100%' }}>
-            <DropdownComponent data={subjectList} isSubject={true} placeholder={"Select Subject"} state={subject} setState={setSubject} />
+          <View style={{ width: "100%" }}>
+            <DropdownComponent
+              data={subjectList}
+              isSubject={true}
+              placeholder={"Select Subject"}
+              state={subject}
+              setState={setSubject}
+            />
           </View>
-          <View style={{ width: '100%' }}>
-            <DropdownComponent data={TimeList} isSubject={false} placeholder={"Select Time"} state={time} setState={setTime} />
+          <View style={{ width: "100%" }}>
+            <DropdownComponent
+              data={TimeList}
+              isSubject={false}
+              placeholder={"Select Time"}
+              state={time}
+              setState={setTime}
+            />
           </View>
         </View>
         <Pressable
@@ -279,7 +365,12 @@ const User = () => {
           }}
         >
           <Text
-            style={{ textAlign: "center", color: "white", fontWeight: "bold", fontSize: 16 }}
+            style={{
+              textAlign: "center",
+              color: "white",
+              fontWeight: "bold",
+              fontSize: 16,
+            }}
           >
             Submit Attendance
           </Text>

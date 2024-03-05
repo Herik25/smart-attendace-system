@@ -524,7 +524,7 @@ app.get("/check-registration/:email", async (req, res) => {
 // Endpoint to add a guardian
 app.post("/addGuardian", async (req, res) => {
   try {
-    const { email, password, fullName, phoneNumber, address } = req.body;
+    const { email, password, fullName, phoneNumber, address, deviceToken } = req.body;
 
     const newGuardian = new Guardian({
       email,
@@ -532,6 +532,7 @@ app.post("/addGuardian", async (req, res) => {
       fullName,
       phoneNumber,
       address,
+      deviceToken
     });
 
     await newGuardian.save();

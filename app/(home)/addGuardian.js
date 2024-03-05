@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,9 +6,12 @@ import {
   TextInput,
   Pressable,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import axios from "axios";
 import { useNavigation } from "expo-router";
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
 
 const AddGuardian = () => {
   const navigate = useNavigation();
@@ -17,6 +20,31 @@ const AddGuardian = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [address, setAddress] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [expoPushToken, setExpoPushToken] = useState(null);
+
+  useEffect(() => {
+    registerForPushNotificationsAsync();
+  }, []);
+
+  const registerForPushNotificationsAsync = async () => {
+    try {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus === "granted") {
+        const token = (await Notifications.getExpoPushTokenAsync()).data;
+        setExpoPushToken(token);
+      } else {
+        alert("Failed to get push token for push notification!");
+      }
+    } catch (error) {
+      console.error("Error registering for push notifications:", error);
+    }
+  };
 
   const handleAddGuardian = () => {
     setIsLoading(true);
@@ -25,6 +53,7 @@ const AddGuardian = () => {
       fullName,
       phoneNumber,
       address,
+      deviceToken: expoPushToken,
     };
 
     axios

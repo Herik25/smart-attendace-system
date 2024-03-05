@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const guardianSchema = new mongoose.Schema({
   email: {
@@ -18,12 +18,17 @@ const guardianSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  students: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Student', // Assuming you have a Student model
-  }],
+  deviceToken: {
+    type: String, // Assuming the device token is a string
+  },
+  students: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Student", // Assuming you have a Student model
+    },
+  ],
 });
 
-const Guardian = mongoose.model('Guardian', guardianSchema);
+const Guardian = mongoose.model("Guardian", guardianSchema);
 
 module.exports = Guardian;

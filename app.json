@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "StudnetAttendance",
-    "slug": "StudnetAttendance",
+    "slug": "studentattendance",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,7 +21,9 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.harsh25.StudnetAttendance",
+      "googleServicesFile": "./google-services.json"
     },
     "scheme": "StudnetAttendanceApp",
     "web": {
@@ -30,10 +32,22 @@
     "plugins": [
       "expo-router",
       [
-        "expo-font", {
-          "fonts": ["./assets/fonts/Poppins-Regular.ttf"]
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/Poppins-Regular.ttf"
+          ]
         }
       ]
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "f00fc047-2dfa-437a-bb41-0f4094b2670e"
+      }
+    },
+    "owner": "harsh25"
   }
 }

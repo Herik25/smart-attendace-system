@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "819689752365",
+    "firebase_url": "https://studentattendance-29921-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "studentattendance-29921",
+    "storage_bucket": "studentattendance-29921.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:819689752365:android:b2cdc3832ce903140975a4",
+        "android_client_info": {
+          "package_name": "com.harsh25.StudnetAttendance"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFPiYbSijgRYLkWiybQ7qDu8KC_xwcb3g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
