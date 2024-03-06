@@ -214,7 +214,7 @@ const markAllStudents = () => {
 
     setCheckedList(updatedCheckedList);
     setCheckedStudentsData(checkedStudentsData);
-    console.log(checkedStudentsData);
+    // console.log(checkedStudentsData);
   };
 
   const toggleSelectAll = () => {
@@ -243,6 +243,10 @@ const markAllStudents = () => {
     }
     try {
       for (const student of checkedStudentsData) {
+        const currentStudent = students.find(
+          (s) => s.rollNo === student.rollNo
+        );
+        // console.log("cur:", currentStudent.guardianEmail);
         // Construct the attendance data for each student
         const attendanceData = {
           rollNo: student.rollNo,
@@ -261,16 +265,51 @@ const markAllStudents = () => {
 
         if (response.status !== 200) {
           console.log(`Failed to mark attendance for ${student.studentName}`);
+        } else {
+          if (currentStudent) {
+            // Fetch guardian data for the current student
+            const guardianResponse = await axios.get(
+              `http://192.168.0.102:8080/guardians/${currentStudent.guardianEmail}`
+            );
+
+            if (guardianResponse.status === 200) {
+              const guardian = guardianResponse.data;
+              const deviceToken = guardian.deviceToken; // Assuming deviceToken is the property containing the token
+              // console.log(deviceToken);
+              // Send push notification using the device token
+              const message = {
+                to: deviceToken,
+                sound: "default",
+                title: "Attendance Marked!",
+                body: `${currentStudent.studentName} is marked ${attendanceData.status} for ${newSubject}`,
+              };
+
+              await fetch("https://exp.host/--/api/v2/push/send", {
+                method: "POST",
+                headers: {
+                  host: "exp.host",
+                  accept: "application/json",
+                  "accept-encoding": "gzip, deflate",
+                  "content-type": "application/json",
+                },
+                body: JSON.stringify(message),
+              });
+            } else {
+              console.log(
+                `Failed to fetch guardian for ${currentStudent.studentName}`
+              );
+            }
+          }
         }
       }
 
       // After marking attendance for all students, display a success message or perform any necessary actions
       console.log("Attendance marked for all students successfully!");
-      setSubmitLoading(!submitLoading);
       setOpen(!open);
     } catch (error) {
       console.log("Error marking attendance for all students:", error);
     }
+    setSubmitLoading(false);
   };
 
   return (
@@ -615,7 +654,11 @@ const markAllStudents = () => {
                   <Text
                     style={{ color: "black", fontSize: 18, fontWeight: "bold" }}
                   >
-                    {submitLoading ? <ActivityIndicator size="small" color="black"  /> : "Submit" }
+                    {submitLoading ? (
+                      <ActivityIndicator size="small" color="black" />
+                    ) : (
+                      "Submit"
+                    )}
                   </Text>
                 </View>
               </Pressable>
