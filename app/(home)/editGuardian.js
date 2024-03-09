@@ -129,13 +129,40 @@ const editGuardian = () => {
             <Text style={{ fontSize: 17, fontWeight: "bold" }}>
               Mobile Number
             </Text>
-            <TextInput
-              value={mobileNo}
-              onChangeText={(text) => setMobileNo(text)}
-              style={styles.input}
-              placeholder="Mobile Number"
-              placeholderTextColor="black"
-            />
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <View
+                style={{
+                  padding: 13,
+                  backgroundColor: "#ddd",
+                  borderColor: "#D0D0D0",
+                  marginTop: 10,
+                  borderTopWidth: 1,
+                  borderLeftWidth: 1,
+                  borderBottomWidth: 1,
+                  borderTopLeftRadius: 5,
+                  borderBottomLeftRadius: 5,
+                }}
+              >
+                <Text style={{ fontSize: 16 }}>+63</Text>
+              </View>
+              <TextInput
+                value={mobileNo}
+                onChangeText={(text) => setMobileNo(text)}
+                style={{
+                  padding: 10,
+                  borderColor: "#D0D0D0",
+                  borderWidth: 1,
+                  marginTop: 10,
+                  borderTopRightRadius: 5,
+                  borderBottomRightRadius: 5,
+                  flex: 1,
+                }}
+                placeholder="Mobile Number"
+                placeholderTextColor="black"
+                keyboardType="numeric"
+                maxLength={10}
+              />
+            </View>
           </View>
 
           <Pressable onPress={handleEdit} style={styles.button}>

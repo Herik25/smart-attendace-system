@@ -95,12 +95,47 @@ const AddGuardian = () => {
         onChangeText={setFullName}
         placeholder="Full Name"
       />
-      <TextInput
-        style={styles.input}
-        value={phoneNumber}
-        onChangeText={setPhoneNumber}
-        placeholder="Phone Number"
-      />
+
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          paddingHorizontal: 25,
+        }}
+      >
+        <View
+          style={{
+            padding: 13,
+            marginBottom: 10,
+            backgroundColor: "#ddd",
+            borderColor: "black",
+            borderTopWidth: 1,
+            borderLeftWidth: 1,
+            borderBottomWidth: 1,
+            borderTopLeftRadius: 5,
+            borderBottomLeftRadius: 5,
+          }}
+        >
+          <Text style={{ fontSize: 16 }}>+63</Text>
+        </View>
+        <TextInput
+          style={{
+            width: "100%",
+            padding: 10,
+            marginBottom: 10,
+            borderWidth: 1,
+            borderColor: "#000",
+            borderTopRightRadius: 5,
+            borderBottomRightRadius: 5,
+          }}
+          value={phoneNumber}
+          onChangeText={setPhoneNumber}
+          placeholder="Phone Number"
+          keyboardType="numeric"
+          maxLength={10}
+        />
+      </View>
+
       <TextInput
         style={styles.input}
         value={address}

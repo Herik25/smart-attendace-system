@@ -1,5 +1,5 @@
 import {
-    Alert,
+  Alert,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -32,7 +32,7 @@ const classData = [
 
 const editStudent = () => {
   const params = useLocalSearchParams();
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   const [rollNo, setRollNo] = useState(0);
   const [student, setStudent] = useState(null);
   const [name, setName] = useState("");
@@ -107,8 +107,8 @@ const editStudent = () => {
       .put(`http://192.168.0.102:8080/students/${rollNo}`, updatedStudent)
       .then((response) => {
         // console.log("Student updated successfully:", response.data);
-        Alert.alert("updated!!", "Student updated successfully!")
-        navigation.navigate("editStudentsList")
+        Alert.alert("updated!!", "Student updated successfully!");
+        navigation.navigate("editStudentsList");
         // Handle any UI updates or navigation after successful update
       })
       .catch((error) => {
@@ -207,38 +207,46 @@ const editStudent = () => {
           <Text style={{ fontSize: 17, fontWeight: "bold" }}>
             Mobile Number
           </Text>
-          <TextInput
-            value={mobileNo}
-            onChangeText={(text) => setMobileNo(text)}
-            style={{
-              padding: 10,
-              borderColor: "#D0D0D0",
-              borderWidth: 1,
-              marginTop: 10,
-              borderRadius: 5,
-            }}
-            placeholder="Mobile No"
-            placeholderTextColor={"black"}
-          />
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View
+              style={{
+                padding: 13,
+                backgroundColor: "#ddd",
+                borderColor: "#D0D0D0",
+                marginTop: 10,
+                borderTopWidth: 1,
+                borderLeftWidth: 1,
+                borderBottomWidth: 1,
+                borderTopLeftRadius: 5,
+                borderBottomLeftRadius: 5,
+              }}
+            >
+              <Text style={{ fontSize: 16 }}>+63</Text>
+            </View>
+            <TextInput
+              value={mobileNo}
+              onChangeText={(text) => setMobileNo(text)}
+              style={{
+                padding: 10,
+                borderColor: "#D0D0D0",
+                borderWidth: 1,
+                marginTop: 10,
+                borderTopRightRadius: 5,
+                borderBottomRightRadius: 5,
+                flex: 1,
+              }}
+              placeholder="Mobile No"
+              placeholderTextColor={"black"}
+              keyboardType="numeric"
+              maxLength={10}
+            />
+          </View>
         </View>
 
         <View style={{ marginVertical: 10 }}>
           <Text style={{ fontSize: 17, fontWeight: "bold", marginBottom: 10 }}>
             Date of Birth
           </Text>
-          {/* <TextInput
-            value={dob}
-            onChangeText={(text) => setDob(text)}
-            style={{
-              padding: 10,
-              borderColor: "#D0D0D0",
-              borderWidth: 1,
-              marginTop: 10,
-              borderRadius: 5,
-            }}
-            placeholder="Enter Date of Birth"
-            placeholderTextColor={"black"}
-          /> */}
           <DatePickerInput
             style={{
               backgroundColor: "white",

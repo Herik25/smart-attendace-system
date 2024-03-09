@@ -107,6 +107,9 @@ const adddetails = () => {
         <View style={{ marginVertical: 10 }}>
           <Text style={{ fontSize: 17, fontWeight: "bold" }}>
             Full Name (First and last Name)
+            <View style={{ transform: [{ translateY: -0.5 }] }}>
+              <Text style={{ fontSize: 14, color: "#B71C1C" }}>*</Text>
+            </View>
           </Text>
           <TextInput
             value={name}
@@ -124,7 +127,12 @@ const adddetails = () => {
         </View>
 
         <View>
-          <Text style={{ fontSize: 17, fontWeight: "bold" }}>Roll No</Text>
+          <Text style={{ fontSize: 17, fontWeight: "bold" }}>
+            Roll No
+            <View>
+              <Text style={{ fontSize: 14, color: "#B71C1C" }}> *</Text>
+            </View>
+          </Text>
           <TextInput
             value={rollNo}
             onChangeText={(text) => setRollNo(text)}
@@ -137,6 +145,7 @@ const adddetails = () => {
             }}
             placeholder="Roll no."
             placeholderTextColor={"black"}
+            keyboardType="numeric"
           />
         </View>
 
@@ -150,6 +159,9 @@ const adddetails = () => {
         >
           <Text style={{ fontSize: 17, fontWeight: "bold", flex: 0.5 }}>
             Gender
+            <View>
+              <Text style={{ fontSize: 14, color: "#B71C1C" }}> *</Text>
+            </View>
           </Text>
           {/* <TextInput
             value={gender}
@@ -197,25 +209,52 @@ const adddetails = () => {
         <View>
           <Text style={{ fontSize: 17, fontWeight: "bold" }}>
             Mobile Number
+            <View>
+              <Text style={{ fontSize: 14, color: "#B71C1C" }}> *</Text>
+            </View>
           </Text>
-          <TextInput
-            value={mobileNo}
-            onChangeText={(text) => setMobileNo(text)}
-            style={{
-              padding: 10,
-              borderColor: "#D0D0D0",
-              borderWidth: 1,
-              marginTop: 10,
-              borderRadius: 5,
-            }}
-            placeholder="Mobile No"
-            placeholderTextColor={"black"}
-          />
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View
+              style={{
+                padding: 13,
+                backgroundColor: "#ddd",
+                borderColor: "#D0D0D0",
+                marginTop: 10,
+                borderTopWidth: 1,
+                borderLeftWidth: 1,
+                borderBottomWidth: 1,
+                borderTopLeftRadius: 5,
+                borderBottomLeftRadius: 5,
+              }}
+            >
+              <Text style={{ fontSize: 16 }}>+63</Text>
+            </View>
+            <TextInput
+              value={mobileNo}
+              onChangeText={(text) => setMobileNo(text)}
+              style={{
+                padding: 10,
+                borderColor: "#D0D0D0",
+                borderWidth: 1,
+                marginTop: 10,
+                borderTopRightRadius: 5,
+                borderBottomRightRadius: 5,
+                flex: 1,
+              }}
+              placeholder="Mobile No"
+              placeholderTextColor={"black"}
+              keyboardType="numeric"
+              maxLength={10}
+            />
+          </View>
         </View>
 
         <View style={{ marginVertical: 10 }}>
           <Text style={{ fontSize: 17, fontWeight: "bold", marginBottom: 10 }}>
             Date of Birth
+            <View>
+              <Text style={{ fontSize: 14, color: "#B71C1C" }}> *</Text>
+            </View>
           </Text>
           <DatePickerInput
             style={{
@@ -246,6 +285,9 @@ const adddetails = () => {
             }}
           >
             Student Class
+            <View style={{ transform: [{ translateY: -0.5 },{ translateY: 10 }] }}>
+              <Text style={{ fontSize: 14, color: "#B71C1C" }}> *</Text>
+            </View>
           </Text>
           <DropdownComponent
             placeholder="Select Class"
@@ -258,6 +300,9 @@ const adddetails = () => {
         <View style={{ marginBottom: 10 }}>
           <Text style={{ fontSize: 17, fontWeight: "bold" }}>
             Guardian Email
+            <View style={{ transform: [{ translateY: -0.5 }] }}>
+              <Text style={{ fontSize: 14, color: "#B71C1C" }}> *</Text>
+            </View>
           </Text>
           <TextInput
             value={guardianEmail}
@@ -275,7 +320,12 @@ const adddetails = () => {
         </View>
 
         <View>
-          <Text style={{ fontSize: 17, fontWeight: "bold" }}>Address</Text>
+          <Text style={{ fontSize: 17, fontWeight: "bold" }}>
+            Address
+            <View>
+              <Text style={{ fontSize: 14, color: "#B71C1C" }}> *</Text>
+            </View>
+          </Text>
           <TextInput
             value={address}
             onChangeText={(text) => setAddress(text)}
