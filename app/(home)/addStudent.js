@@ -59,10 +59,10 @@ const adddetails = () => {
       guardianEmail: guardianEmail.toLowerCase(),
     };
     // console.log(studentData);
-    // my device's wife ip address: 192.168.0.102:8080
+    // my device's wife ip address: 192.168.0.101:8080
     // for pc ip address should be 10.0.2.2:8080
     axios
-      .post("http://192.168.0.102:8080/addStudent", studentData)
+      .post("http://192.168.0.101:8080/addStudent", studentData)
       .then((response) => {
         setIsLoading(false);
         Alert.alert(

@@ -57,7 +57,7 @@ const AddGuardian = () => {
     };
 
     axios
-      .post("http://192.168.0.102:8080/addGuardian", guardianData)
+      .post("http://192.168.0.101:8080/addGuardian", guardianData)
       .then((response) => {
         setIsLoading(false);
         Alert.alert(

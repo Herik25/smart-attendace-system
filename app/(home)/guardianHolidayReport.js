@@ -26,7 +26,7 @@ const guardianHolidayReport = () => {
   const fetchHolidayReports = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.0.102:8080/holiday-reports?month=${
+        `http://192.168.0.101:8080/holiday-reports?month=${
           currentMonth + 1
         }&year=${currentYear}`
       );
@@ -42,7 +42,7 @@ const guardianHolidayReport = () => {
   const fetchTotalHolidays = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.0.102:8080/holiday-reports?month=${currentDate.format(
+        `http://192.168.0.101:8080/holiday-reports?month=${currentDate.format(
           "M"
         )}&year=${currentDate.format("YYYY")}`
       );

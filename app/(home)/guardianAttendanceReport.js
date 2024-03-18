@@ -79,9 +79,9 @@ const guardianAttendanceReport = () => {
   useEffect(() => {
     const fetchStudentsData = async () => {
       try {
-        // my device's wife ip address: 192.168.0.102:8080
+        // my device's wife ip address: 192.168.0.101:8080
         // for pc ip address should be 10.0.2.2:8080
-        const response = await axios.get("http://192.168.0.102:8080/students");
+        const response = await axios.get("http://192.168.0.101:8080/students");
         setStudents(response.data);
       } catch (error) {
         console.log("error fetching student data", error);
@@ -92,7 +92,7 @@ const guardianAttendanceReport = () => {
   const [attendance, setAttendance] = useState([]);
   const fetchAttendanceData = async () => {
     try {
-      const response = await axios.get(`http://192.168.0.102:8080/attendance`, {
+      const response = await axios.get(`http://192.168.0.101:8080/attendance`, {
         params: {
           date: currentDate.format("MMMM D, YYYY"),
         },
@@ -122,9 +122,9 @@ const guardianAttendanceReport = () => {
   useEffect(() => {
     const fetchStudentsData = async () => {
       try {
-        // my device's wife ip address: 192.168.0.102:8080
+        // my device's wife ip address: 192.168.0.101:8080
         // for pc ip address should be 10.0.2.2:8080
-        const response = await axios.get("http://192.168.0.102:8080/students");
+        const response = await axios.get("http://192.168.0.101:8080/students");
         // console.log(response);
         setStudents(response.data);
       } catch (error) {

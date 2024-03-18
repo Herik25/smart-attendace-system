@@ -68,7 +68,8 @@ const loginMonitor = () => {
 
       const action = signIn(
         formState.inputValues.email,
-        formState.inputValues.password
+        formState.inputValues.password,
+        "monitor"
       );
       await dispatch(action);
 

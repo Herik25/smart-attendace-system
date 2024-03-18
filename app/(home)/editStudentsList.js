@@ -25,7 +25,7 @@ const editStudentsList = () => {
   useEffect(() => {
     const fetchStudentsData = async () => {
       try {
-        const response = await axios.get("http://192.168.0.102:8080/students");
+        const response = await axios.get("http://192.168.0.101:8080/students");
         setStudents(response.data);
         setIsLoading(false);
       } catch (error) {

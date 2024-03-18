@@ -68,7 +68,7 @@ const editStudent = () => {
     // Fetch the student data based on the roll number
     if (rollNo !== 0) {
       axios
-        .get(`http://192.168.0.102:8080/students/${rollNo}`)
+        .get(`http://192.168.0.101:8080/students/${rollNo}`)
         .then((response) => {
           const studentData = response.data;
           setStudent(studentData);
@@ -104,7 +104,7 @@ const editStudent = () => {
     };
 
     axios
-      .put(`http://192.168.0.102:8080/students/${rollNo}`, updatedStudent)
+      .put(`http://192.168.0.101:8080/students/${rollNo}`, updatedStudent)
       .then((response) => {
         // console.log("Student updated successfully:", response.data);
         Alert.alert("updated!!", "Student updated successfully!");

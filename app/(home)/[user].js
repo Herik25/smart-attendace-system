@@ -80,7 +80,7 @@ const User = () => {
     try {
       // Fetch student based on roll number (id)
       const response = await axios.get(
-        `http://192.168.0.102:8080/students?rollNo=${id}`
+        `http://192.168.0.101:8080/students?rollNo=${id}`
       );
       if (response.status === 200) {
         setStudent(response.data);
@@ -93,7 +93,7 @@ const User = () => {
   const fetchGuardian = async (email) => {
     try {
       const response = await axios.get(
-        `http://192.168.0.102:8080/guardians/${email}`
+        `http://192.168.0.101:8080/guardians/${email}`
       );
       if (response.status === 200) {
         setGuardian(response.data);
@@ -133,10 +133,10 @@ const User = () => {
 
   const submitAttendance = async () => {
     try {
-      // my device's wifi ip address: 192.168.0.102:8080
+      // my device's wifi ip address: 192.168.0.101:8080
       // for pc ip address should be 10.0.2.2:8080
       const response = await axios.post(
-        "http://192.168.0.102:8080/attendance",
+        "http://192.168.0.101:8080/attendance",
         attendanceData
       );
 
