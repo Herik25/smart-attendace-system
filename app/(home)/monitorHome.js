@@ -11,6 +11,7 @@ import { SplashScreen, useRouter } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
 import { FontAwesome6 } from "@expo/vector-icons";
+import { SimpleLineIcons } from '@expo/vector-icons';
 
 const monitorHome = () => {
   const router = useRouter();
@@ -42,7 +43,9 @@ const monitorHome = () => {
           >
             Tambong
           </Text>
-          <Entypo name="lock" size={20} color="black" />
+          <Pressable onPress={() => router.push("aboutUs")}>
+            <SimpleLineIcons name="info" size={22} color="black" />
+          </Pressable>
         </View>
         <View style={{ paddingHorizontal: 12 }}>
           <View

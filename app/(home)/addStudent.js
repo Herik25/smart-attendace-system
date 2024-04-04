@@ -30,7 +30,7 @@ const classData = [
   { label: "12th", value: "12th" },
 ];
 
-const adddetails = () => {
+const addStudents = () => {
   const [rollNo, setRollNo] = useState("");
   const [name, setName] = useState("");
   const [dob, setDob] = useState(undefined);
@@ -365,6 +365,6 @@ const adddetails = () => {
   );
 };
 
-export default adddetails;
+export default addStudents;
 
 const styles = StyleSheet.create({});
