@@ -27,85 +27,43 @@ const aboutUs = () => {
           paddingBottom: 10,
         }}
       >
-        Meet Our Researchers
+        THE RESEARCHERS
       </Text>
       {/* First researcher */}
       <View
         style={{
-          flexDirection: "row",
+          flexDirection: "column",
           alignItems: "center",
-          marginBottom: 20,
+
           paddingHorizontal: 15,
-          borderBottomColor: "#ccc",
-          borderBottomWidth: 1,
-          paddingBottom: 20,
+
         }}
       >
         <ImageBackground
           source={require("../../assets/researcher.jpg")}
-          style={{ width: 150, height: 200, borderRadius: 50, marginRight: 15 }}
+          style={{ width: 350, height: 200, borderRadius: 50 }}
         />
-        <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 5 }}>
-            Rexil L. Dator
-          </Text>
-          <Text style={{ fontSize: 16 }}>
-            Sex: Female{"\n"}
-            Date of Birth: October 12, 2006{"\n"}
-            Email Address: rexilldator@gmail.com
-          </Text>
-        </View>
       </View>
-      {/* Second researcher */}
+      {/* Quote */}
       <View
         style={{
-          flexDirection: "row",
-          alignItems: "center",
-          marginBottom: 20,
-          paddingHorizontal: 15,
-          borderBottomColor: "#ccc",
-          borderBottomWidth: 1,
-          paddingBottom: 20,
+          backgroundColor: "transparent",
+          paddingHorizontal: 20,
+          paddingVertical: 35,
+          
         }}
       >
-        <ImageBackground
-          source={require("../../assets/researcher.jpg")}
-          style={{ width: 150, height: 200, borderRadius: 50, marginRight: 15 }}
-        />
-        <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 5 }}>
-            Angela C. Cerna
-          </Text>
-          <Text style={{ fontSize: 16 }}>
-            Sex: Female {"\n"}
-            Date of Birth: December 29, 2005{"\n"}
-            Email Address: angelacerna287@gmail.com
-          </Text>
-        </View>
-      </View>
-      {/* Third researcher */}
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          paddingHorizontal: 15,
-        }}
-      >
-        <ImageBackground
-          source={require("../../assets/researcher.jpg")}
-          style={{ width: 150, height: 200, borderRadius: 50, marginRight: 15 }}
-        />
-        <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 5 }}>
-            Honey Blaze T. Corton
-          </Text>
-          <Text style={{ fontSize: 16 }}>
-            Sex: Female{"\n"}
-            Date of Birth: March 31, 2006{"\n"}
-            Email Address:
-            hnyblzcorton@gmail.com
-          </Text>
-        </View>
+        <Text
+          style={{
+            fontSize: 24,
+            fontWeight: "bold",
+            textAlign: "center",
+            color: "black",
+          }}
+        >
+          “Empowering Education{"\n"} Through Seamless{"\n"} Attendance
+          Management{"\n"} and Guardian Engagement.”
+        </Text>
       </View>
       {/* Our Story */}
       <View
@@ -128,10 +86,10 @@ const aboutUs = () => {
             textAlign: "center",
           }}
         >
-          Our Vision
+          VISION
         </Text>
         <Text style={{ fontSize: 16, lineHeight: 24 }}>
-          The vision of TAMBONG is to become a necessary tool for educational
+          To become a necessary tool for educational
           institution, transforming the way they approach attendance management.
           By continuously innovating and adapting to the evolving needs of the
           education sector, the app aspires to enhance the learning experience,
@@ -139,28 +97,7 @@ const aboutUs = () => {
           to the overall betterment of the educational system.
         </Text>
       </View>
-      {/* Quote */}
-      <View
-        style={{
-          backgroundColor: "#000",
-          paddingHorizontal: 20,
-          paddingVertical: 35,
-          borderBottomColor: "black",
-          borderBottomWidth: 2,
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 24,
-            fontWeight: "bold",
-            textAlign: "center",
-            color: "white",
-          }}
-        >
-          “Empowering Education{"\n"} Through Seamless{"\n"} Attendance
-          Management{"\n"} and Guardian Engagement.”
-        </Text>
-      </View>
+
       {/* Our Mission */}
       <View
         style={{
@@ -179,34 +116,16 @@ const aboutUs = () => {
             textAlign: "center",
           }}
         >
-          Our Mission
+          MISSION
         </Text>
         <Text style={{ fontSize: 16, lineHeight: 24 }}>
-          The mission of TAMBONG is to provide educational institutions and
+          To provide educational institutions and
           guardians a useful tool to improve student safety and parental
           involvement. Supporting the larger goals of excellence in education
           and school accountability.
         </Text>
       </View>
-      {/* Thank You */}
-      <View
-        style={{
-          paddingHorizontal: 15,
-          paddingVertical: 20,
-          borderBottomColor: "black",
-          borderBottomWidth: 2,
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 24,
-            fontWeight: "bold",
-            textAlign: "center",
-          }}
-        >
-          Thank You!
-        </Text>
-      </View>
+
     </ScrollView>
   );
 };

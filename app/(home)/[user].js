@@ -64,8 +64,8 @@ const User = () => {
   }, []);
 
   useEffect(() => {
-    if (student) {
-      fetchGuardian(student[0].guardianEmail);
+    if (student !== null) {
+      fetchGuardian(student.guardianEmail);
     }
   }, [student]);
 
@@ -80,7 +80,7 @@ const User = () => {
     try {
       // Fetch student based on roll number (id)
       const response = await axios.get(
-        `http://192.168.0.101:8080/students?rollNo=${id}`
+        `http://192.168.0.102:8080/students/${id}`
       );
       if (response.status === 200) {
         setStudent(response.data);
@@ -93,7 +93,7 @@ const User = () => {
   const fetchGuardian = async (email) => {
     try {
       const response = await axios.get(
-        `http://192.168.0.101:8080/guardians/${email}`
+        `http://192.168.0.102:8080/guardians/${email}`
       );
       if (response.status === 200) {
         setGuardian(response.data);
@@ -136,7 +136,7 @@ const User = () => {
       // my device's wifi ip address: 192.168.0.101:8080
       // for pc ip address should be 10.0.2.2:8080
       const response = await axios.post(
-        "http://192.168.0.101:8080/attendance",
+        "http://192.168.0.102:8080/attendance",
         attendanceData
       );
 
@@ -159,7 +159,7 @@ const User = () => {
       to: token,
       sound: "default",
       title: "Attendance Marked!",
-      body: `${student[0].studentName} is marked ${attendanceData.status} for ${subject}`,
+      body: `${student.studentName} is marked ${attendanceData.status} for ${subject}`,
     };
 
     await fetch("https://exp.host/--/api/v2/push/send", {
@@ -173,6 +173,27 @@ const User = () => {
       body: JSON.stringify(message),
     });
   };
+
+  const sendLeaveNotification = async () => {
+     // notification message
+     const message = {
+      to: guardian.deviceToken,
+      sound: "default",
+      title: "Attendance Marked!",
+      body: `${student.studentName} is leaving after attending ${subject} at${time.split("-")[1]}`,
+    };
+
+    await fetch("https://exp.host/--/api/v2/push/send", {
+      method: "POST",
+      headers: {
+        host: "exp.host",
+        accept: "application/json",
+        "accept-encoding": "gzip, deflate",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(message),
+    });
+  }
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -332,6 +353,36 @@ const User = () => {
             <Text>Holiday</Text>
           </Pressable>
         </View>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 16,
+            marginVertical: 10,
+          }}
+        >
+          <Pressable
+            onPress={() => setAttendanceStatus("leaving")}
+            style={{
+              backgroundColor: "#f1f1f1",
+              padding: 10,
+              borderRadius: 8,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 10,
+              flex: 0.5
+            }}
+          >
+            {attendanceStatus === "leaving" ? (
+              <FontAwesome5 name="dot-circle" size={24} color="black" />
+            ) : (
+              <Entypo name="circle" size={24} color="black" />
+            )}
+            <Text>Leaving</Text>
+          </Pressable>
+        </View>
         <View style={{ flexDirection: "column", alignItems: "center" }}>
           <View style={{ width: "100%" }}>
             <DropdownComponent
@@ -352,29 +403,55 @@ const User = () => {
             />
           </View>
         </View>
-        <Pressable
-          onPress={submitAttendance}
-          style={{
-            padding: 15,
-            backgroundColor: "black",
-            width: 200,
-            marginLeft: "auto",
-            marginRight: "auto",
-            marginTop: 30,
-            borderRadius: 6,
-          }}
-        >
-          <Text
+        {attendanceStatus === "leaving" ? (
+          <Pressable
+            onPress={sendLeaveNotification}
             style={{
-              textAlign: "center",
-              color: "white",
-              fontWeight: "bold",
-              fontSize: 16,
+              padding: 15,
+              backgroundColor: "black",
+              width: 200,
+              marginLeft: "auto",
+              marginRight: "auto",
+              marginTop: 30,
+              borderRadius: 6,
             }}
           >
-            Submit Attendance
-          </Text>
-        </Pressable>
+            <Text
+              style={{
+                textAlign: "center",
+                color: "white",
+                fontWeight: "bold",
+                fontSize: 16,
+              }}
+            >
+              Mark Leaving
+            </Text>
+          </Pressable>
+        ) : (
+          <Pressable
+            onPress={submitAttendance}
+            style={{
+              padding: 15,
+              backgroundColor: "black",
+              width: 200,
+              marginLeft: "auto",
+              marginRight: "auto",
+              marginTop: 30,
+              borderRadius: 6,
+            }}
+          >
+            <Text
+              style={{
+                textAlign: "center",
+                color: "white",
+                fontWeight: "bold",
+                fontSize: 16,
+              }}
+            >
+              Submit Attendance
+            </Text>
+          </Pressable>
+        )}
       </View>
     </View>
   );

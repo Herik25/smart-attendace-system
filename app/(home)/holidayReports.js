@@ -36,7 +36,7 @@ const HolidayReports = () => {
   const fetchHolidayReports = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.0.101:8080/holiday-reports?month=${
+        `http://192.168.0.102:8080/holiday-reports?month=${
           currentMonth + 1
         }&year=${currentYear}`
       );
@@ -52,7 +52,7 @@ const HolidayReports = () => {
   const handleAddHoliday = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.post("http://192.168.0.101:8080/holidays", {
+      const response = await axios.post("http://192.168.0.102:8080/holidays", {
         date: updatedDate,
         name: newHolidayName,
         detail: newHolidayDetail,

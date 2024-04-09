@@ -40,9 +40,9 @@ const students = () => {
   useEffect(() => {
     const fetchStudentsData = async () => {
       try {
-        // my device's wife ip address: 192.168.0.101:8080
+        // my device's wife ip address: 192.168.0.102:8080
         // for pc ip address should be 10.0.2.2:8080
-        const response = await axios.get("http://192.168.0.101:8080/students");
+        const response = await axios.get("http://192.168.0.102:8080/students");
         setIsLoading(false);
         // console.log(response);
         setstudents(response.data);

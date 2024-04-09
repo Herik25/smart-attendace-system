@@ -36,7 +36,7 @@ const editGuardian = () => {
     if (guardianEmail !== "") {
       setIsLoading(true);
       axios
-        .get(`http://192.168.0.101:8080/guardians/${guardianEmail}`)
+        .get(`http://192.168.0.102:8080/guardians/${guardianEmail}`)
         .then((response) => {
           const guardianData = response.data;
           setGuardianName(guardianData.fullName);
@@ -60,7 +60,7 @@ const editGuardian = () => {
 
     axios
       .put(
-        `http://192.168.0.101:8080/guardians/${guardianEmail}`,
+        `http://192.168.0.102:8080/guardians/${guardianEmail}`,
         updatedGuardian
       )
       .then((response) => {

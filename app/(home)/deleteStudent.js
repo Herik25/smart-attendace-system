@@ -25,7 +25,7 @@ const DeleteStudent = () => {
   useEffect(() => {
     const fetchStudentsData = async () => {
       try {
-        const response = await axios.get("http://192.168.0.101:8080/students");
+        const response = await axios.get("http://192.168.0.102:8080/students");
         setStudents(response.data);
         setIsLoading(false);
       } catch (error) {
@@ -38,7 +38,7 @@ const DeleteStudent = () => {
   const deleteStudent = async (studentId) => {
     try {
       // Delete student from students collection
-      await axios.delete(`http://192.168.0.101:8080/students/${studentId}`);
+      await axios.delete(`http://192.168.0.102:8080/students/${studentId}`);
 
       Alert.alert("Deleted Succefully!", "Student deleted successfully");
     } catch (error) {

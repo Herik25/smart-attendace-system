@@ -24,8 +24,8 @@ const DeleteAllAttendance = () => {
             onPress: async () => {
               try {
                 // Perform deletion
-                await axios.delete("http://192.168.0.101:8080/attendance");
-                await axios.delete("http://192.168.0.101:8080/holidays");
+                await axios.delete("http://192.168.0.102:8080/attendance");
+                await axios.delete("http://192.168.0.102:8080/holidays");
                 Alert.alert(
                   "Success",
                   "All attendance records deleted successfully."

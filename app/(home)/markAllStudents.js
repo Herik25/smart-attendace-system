@@ -75,9 +75,9 @@ const markAllStudents = () => {
   useEffect(() => {
     const fetchStudentsData = async () => {
       try {
-        // my device's wife ip address: 192.168.0.101:8080
+        // my device's wife ip address: 192.168.0.102:8080
         // for pc ip address should be 10.0.2.2:8080
-        const response = await axios.get("http://192.168.0.101:8080/students");
+        const response = await axios.get("http://192.168.0.102:8080/students");
         setStudents(response.data);
         setIsLoading(false);
       } catch (error) {
@@ -90,7 +90,7 @@ const markAllStudents = () => {
   const fetchAttendanceData = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get(`http://192.168.0.101:8080/attendance`, {
+      const response = await axios.get(`http://192.168.0.102:8080/attendance`, {
         params: {
           date: currentDate.format("MMMM D, YYYY"),
         },
@@ -112,7 +112,7 @@ const markAllStudents = () => {
       try {
         setIsLoading(true);
         const response = await axios.get(
-          `http://192.168.0.101:8080/attendance`,
+          `http://192.168.0.102:8080/attendance`,
           {
             params: {
               date: currentDate.format("MMMM D, YYYY"),
@@ -134,10 +134,10 @@ const markAllStudents = () => {
   useEffect(() => {
     const fetchStudentsData = async () => {
       try {
-        // my device's wife ip address: 192.168.0.101:8080
+        // my device's wife ip address: 192.168.0.102:8080
         // for pc ip address should be 10.0.2.2:8080
         setIsLoading(true);
-        const response = await axios.get("http://192.168.0.101:8080/students");
+        const response = await axios.get("http://192.168.0.102:8080/students");
         // console.log(response);
         setStudents(response.data);
         setIsLoading(false);
@@ -259,7 +259,7 @@ const markAllStudents = () => {
 
         // Send a POST request to submit the attendance for each student
         const response = await axios.post(
-          "http://192.168.0.101:8080/attendance",
+          "http://192.168.0.102:8080/attendance",
           attendanceData
         );
 
@@ -269,7 +269,7 @@ const markAllStudents = () => {
           if (currentStudent) {
             // Fetch guardian data for the current student
             const guardianResponse = await axios.get(
-              `http://192.168.0.101:8080/guardians/${currentStudent.guardianEmail}`
+              `http://192.168.0.102:8080/guardians/${currentStudent.guardianEmail}`
             );
 
             if (guardianResponse.status === 200) {

@@ -89,7 +89,7 @@ const loginGuardian = () => {
   const checkUserRegistration = async (email) => {
     try {
       const response = await axios.get(
-        `http://192.168.0.101:8080/check-registration/${email}`
+        `http://192.168.0.102:8080/check-registration/${email}`
       );
 
       const isRegistered = response.data.isRegistered;
