@@ -135,6 +135,8 @@ const fullReport = () => {
     }
   };
 
+  console.log(typeof(true && "" && false && 0));
+
   const fetchTotalHolidays = async () => {
     try {
       const response = await axios.get(
@@ -207,6 +209,12 @@ const fullReport = () => {
 
   const totalWeeklyAttendance = calculateWeeklyAttendance();
   const totalTodayAttendance = calculateTodayAttendance();
+  const totalMonthlyAttendance = attendanceData[0]?.present
+    ? calculatePercentage(
+        attendanceData[0].present,
+        totalSubjects - totalHolidays
+      )
+    : 0;
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -320,10 +328,7 @@ const fullReport = () => {
                     }}
                   >
                     {/* 0.5% */}
-                    {calculatePercentage(
-                      attendanceData[0]?.present,
-                      totalSubjects - totalHolidays
-                    )}
+                    {totalMonthlyAttendance}
                     %
                   </Text>
                 </View>

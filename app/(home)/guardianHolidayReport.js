@@ -70,7 +70,7 @@ const guardianHolidayReport = () => {
         }}
       >
         <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-          Holiday Reports
+          No Class Reports
         </Text>
       </View>
 

@@ -82,7 +82,7 @@ const HolidayReports = () => {
         }}
       >
         <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-          Holiday Reports
+          No Class Reports
         </Text>
       </View>
       <View
@@ -102,7 +102,7 @@ const HolidayReports = () => {
             marginTop: 10,
           }}
         >
-          Add Holiday
+          Add No Class
         </Text>
         <DatePickerInput
           style={{
@@ -119,7 +119,7 @@ const HolidayReports = () => {
           }}
           endYear={2024}
           locale="en"
-          label="Holiday"
+          label="No Class"
           value={newHolidayDate}
           onChange={(d) => setNewHolidayDate(d)}
           inputMode="start"
@@ -163,13 +163,13 @@ const HolidayReports = () => {
           }}
         >
           <Text style={{ fontWeight: "bold", color: "white", fontSize: 16 }}>
-            ADD HOLIDAY
+            ADD No Class
           </Text>
         </Pressable>
       </View>
       <View style={{ padding: 10, marginBottom: 20 }}>
         <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 15 }}>
-          Holiday Report
+          No Class Report
         </Text>
         {isLoading ? (
           <View

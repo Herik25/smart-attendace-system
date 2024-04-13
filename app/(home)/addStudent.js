@@ -128,7 +128,7 @@ const addStudents = () => {
 
         <View>
           <Text style={{ fontSize: 17, fontWeight: "bold" }}>
-            Roll No
+            Student No
             <View>
               <Text style={{ fontSize: 14, color: "#B71C1C" }}> *</Text>
             </View>
